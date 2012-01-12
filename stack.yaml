@@ -1,0 +1,13 @@
+Catkin-ProjectName: octomap
+Version: 1.3.2
+
+Depends: libtbb-dev, libgtest-dev, python, python-numpy, libboost-all-dev, libboost-mpi-dev
+
+Description: The OctoMap library implements a 3D occupancy grid mapping approach, providing data structures and mapping algorithms in C++. The map implementation is based on an octree.
+
+Author: Kai M. Wurm and Armin Hornung
+Maintainer: Armin Hornung <hornunga@informatik.uni-freiburg.de>
+Homepage: http://octomap.sourceforge.net/
+
+Catkin-CopyrightType:  willowgarage
+Catkin-DebRulesType: cmake
