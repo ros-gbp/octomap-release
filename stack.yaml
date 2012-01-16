@@ -1,7 +1,7 @@
 Catkin-ProjectName: octomap
 Version: 1.3.2
 
-Depends: libstdc++6
+Depends: cmake
 
 Description: The OctoMap library implements a 3D occupancy grid mapping approach, providing data structures and mapping algorithms in C++. The map implementation is based on an octree.
 
