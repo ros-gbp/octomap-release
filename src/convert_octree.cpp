@@ -1,4 +1,4 @@
-// $Id: convert_octree.cpp 343 2012-02-22 10:01:17Z ahornung $
+// $Id: convert_octree.cpp 352 2012-03-22 13:23:43Z ahornung $
 
 /**
 * OctoMap:
@@ -126,10 +126,26 @@ int main(int argc, char** argv) {
   if (outputFilename.length() > 3 && (outputFilename.compare(outputFilename.length()-3, 3, ".bt") == 0)){
     std::cerr << "Writing binary (BonsaiTree) file" << std::endl;
     OcTree* octree = dynamic_cast<OcTree*>(tree);
-    if (!octree || !octree->writeBinary(outputFilename)){
-      std::cerr << "Error writing to " << outputFilename << std::endl;
-      exit(-2);
+    if (octree){
+      if (!octree->writeBinary(outputFilename)){
+        std::cerr << "Error writing to " << outputFilename << std::endl;
+        exit(-2);
+      }
+
+    } else {
+      ColorOcTree* colorTree = dynamic_cast<ColorOcTree*>(tree);
+      if (!colorTree){
+        std::cerr << "Error: Writing to .bt is not supported for this tree type" << std::endl;
+        exit(-2);
+      }
+
+      if (!colorTree->writeBinary(outputFilename)){
+        std::cerr << "Error writing ColorOcTree to " << outputFilename << std::endl;
+        exit(-2);
+      }
     }
+
+
 
   } else{
     std::cerr << "Writing general OcTree file" << std::endl;
