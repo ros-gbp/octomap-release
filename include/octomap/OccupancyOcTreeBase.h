@@ -1,7 +1,7 @@
 #ifndef OCTOMAP_OCCUPANCY_OCTREE_BASE_H
 #define OCTOMAP_OCCUPANCY_OCTREE_BASE_H
 
-// $Id: OccupancyOcTreeBase.h 339 2012-01-20 15:33:23Z ahornung $
+// $Id: OccupancyOcTreeBase.h 365 2012-04-24 12:47:08Z ahornung $
 
 /**
 * OctoMap:
@@ -105,13 +105,13 @@ namespace octomap {
      * @param scan ScanNode contains Pointcloud data and frame/sensor origin
      * @param maxrange maximum range for how long individual beams are inserted (default -1: complete beam)
      * @param pruning whether the tree is (losslessly) pruned after insertion (default: true)
-     * @param dirty whether the tree is left 'dirty' after the update (default: false).
+     * @param lazy_eval whether the tree is left 'dirty' after the update (default: false).
      *   This speeds up the insertion by not updating inner nodes, but you need to call updateInnerOccupancy() when done.
      */
     virtual void insertScan(const ScanNode& scan, double maxrange=-1., bool pruning = true, bool lazy_eval = false);
 
     /// for testing only
-    virtual void insertScanNaive(const Pointcloud& pc, const point3d& origin, double maxrange, bool pruning);
+    virtual void insertScanNaive(const Pointcloud& pc, const point3d& origin, double maxrange, bool pruning = true, bool lazy_eval = false);
 
     /**
      * Manipulate log_odds value of voxel directly
@@ -160,17 +160,25 @@ namespace octomap {
     virtual NODE* updateNode(const point3d& value, bool occupied, bool lazy_eval = false);
 
 
-    /// Creates the maximum likelihood map by calling toMaxLikelihood on all
-    /// tree nodes, setting their occupancy to the corresponding occupancy thresholds.
+    /**
+     * Creates the maximum likelihood map by calling toMaxLikelihood on all
+     * tree nodes, setting their occupancy to the corresponding occupancy thresholds.
+     * This enables a very efficient compression if you call prune() afterwards.
+     */
     virtual void toMaxLikelihood();
 
     /**
      * Insert one ray between origin and end into the tree.
-     *
      * integrateMissOnRay() is called for the ray, the end point is updated as occupied.
-     * maxrange can be used to specify a maximum sensor range that is considered
+     *
+     * @param origin origin of sensor in global coordinates
+     * @param end endpoint of measurement in global coordinates
+     * @param maxrange maximum range after which the raycast should be aborted
+     * @param lazy_eval whether update of inner nodes is omitted after the update (default: false).
+     *   This speeds up the insertion, but you need to call updateInnerOccupancy() when done.
+     * @return success of operation
      */
-    virtual bool insertRay(const point3d& origin, const point3d& end, double maxrange=-1.);
+    virtual bool insertRay(const point3d& origin, const point3d& end, double maxrange=-1.0, bool lazy_eval = false);
     
     /**
      * Performs raycasting in 3d, similar to computeRay().
@@ -290,6 +298,32 @@ namespace octomap {
     void setClampingThresMin(double thresProb){clampingThresMin = logodds(thresProb); }
     /// sets the maximum threshold for occupancy clamping (sensor model)
     void setClampingThresMax(double thresProb){clampingThresMax = logodds(thresProb); }
+
+    /// @return threshold (probability) for occupancy - sensor model
+    double getOccupancyThres() const {return probability(occProbThresLog); }
+    /// @return threshold (logodds) for occupancy - sensor model
+    float getOccupancyThresLog() const {return occProbThresLog; }
+
+    /// @return probablility for a "hit" in the sensor model (probability)
+    double getProbHit() const {return probability(probHitLog); }
+    /// @return probablility for a "hit" in the sensor model (logodds)
+    float getProbHitLog() const {return probHitLog; }
+    /// @return probablility for a "miss"  in the sensor model (probability)
+    double getProbMiss() const {return probability(probMissLog); }
+    /// @return probablility for a "miss"  in the sensor model (logodds)
+    float getProbMissLog() const {return probMissLog; }
+
+    /// @return minimum threshold for occupancy clamping in the sensor model (probability)
+    double getClampingThresMin() const {return probability(clampingThresMin); }
+    /// @return minimum threshold for occupancy clamping in the sensor model (logodds)
+    float getClampingThresMinLog() const {return clampingThresMin; }
+    /// @return maximum threshold for occupancy clamping in the sensor model (probability)
+    double getClampingThresMax() const {return probability(clampingThresMax); }
+    /// @return maximum threshold for occupancy clamping in the sensor model (logodds)
+    float getClampingThresMaxLog() const {return clampingThresMax; }
+
+
+
 
 
     /**
@@ -417,7 +451,7 @@ namespace octomap {
      * Traces a ray from origin to end and updates all voxels on the
      *  way as free.  The volume containing "end" is not updated.
      */
-    inline bool integrateMissOnRay(const point3d& origin, const point3d& end);
+    inline bool integrateMissOnRay(const point3d& origin, const point3d& end, bool lazy_eval = false);
 
 
     // recursive calls ----------------------------

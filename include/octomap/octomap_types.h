@@ -1,4 +1,4 @@
-// $Id: octomap_types.h 268 2011-08-18 14:41:57Z kai_wurm $
+// $Id: octomap_types.h 366 2012-04-24 14:33:26Z ahornung $
 
 /**
 * OctoMap:
@@ -76,6 +76,10 @@ namespace octomap {
   #else
     // no debug output if not in debug mode:
     #ifdef NDEBUG
+      #define OCTOMAP_NODEBUGOUT
+    #endif
+
+    #ifdef OCTOMAP_NODEBUGOUT
       #define OCTOMAP_DEBUG(...)       (void)0
       #define OCTOMAP_DEBUG_STR(...)   (void)0
     #else
