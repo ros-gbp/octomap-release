@@ -1,0 +1,10 @@
+Package: ros-fuerte-octomap
+Version: 1.4.1-0oneiric
+Architecture: amd64
+Maintainer: Armin Hornung <hornunga@informatik.uni-freiburg.de>
+Installed-Size: 1552
+Depends: libc6 (>= 2.4), libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.6), cmake
+Section: misc
+Priority: extra
+Homepage: http://octomap.sourceforge.net/
+Description: The OctoMap library implements a 3D occupancy grid mapping approach, providing data structures and mapping algorithms in C++. The map implementation is based on an octree.
