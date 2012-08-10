@@ -1,7 +1,7 @@
 #ifndef OCTOMAP_OCTREE_H
 #define OCTOMAP_OCTREE_H
 
-// $Id: OcTree.h 332 2011-12-13 12:49:39Z ahornung $
+// $Id: OcTree.h 391 2012-06-21 10:07:53Z ahornung $
 
 /**
 * OctoMap:
@@ -54,12 +54,8 @@ namespace octomap {
   class OcTree : public OccupancyOcTreeBase <OcTreeNode> {
 
   public:
-
-    /**
-     * Creates a new (empty) OcTree of a given resolution
-     * @param _resolution
-     */
-    OcTree(double _resolution);
+    /// Default constructor, sets resolution of leafs
+    OcTree(double resolution) : OccupancyOcTreeBase<OcTreeNode>(resolution) {};
 
     /**
      * Reads an OcTree from a binary file 

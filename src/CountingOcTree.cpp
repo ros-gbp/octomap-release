@@ -1,4 +1,4 @@
-// $Id: CountingOcTree.cpp 332 2011-12-13 12:49:39Z ahornung $
+// $Id: CountingOcTree.cpp 397 2012-08-02 13:34:36Z ahornung $
 
 /**
 * OctoMap:
@@ -61,34 +61,27 @@ namespace octomap {
     unsigned int childCount = (unsigned int)(value/ 8.0 +0.5);
     for (unsigned int k=0; k<8; k++) {
       createChild(k);
-      itsChildren[k]->setValue(childCount);
+      children[k]->setValue(childCount);
     }
   }
 
   bool CountingOcTreeNode::createChild(unsigned int i) {
-    if (itsChildren == NULL) {
+    if (children == NULL) {
       allocChildren();
     }
-    assert (itsChildren[i] == NULL);
-    itsChildren[i] = new CountingOcTreeNode();
+    assert (children[i] == NULL);
+    children[i] = new CountingOcTreeNode();
     return true;
   }
 
 
   /// implementation of CountingOcTree  --------------------------------------
 
-  CountingOcTree::CountingOcTree(double _resolution)
-    : OcTreeBase<CountingOcTreeNode>(_resolution)   {
-
-    itsRoot = new CountingOcTreeNode();
-    tree_size++;
-  }
-
 
   CountingOcTreeNode* CountingOcTree::updateNode(const point3d& value) {
 
     OcTreeKey key;
-    if (!genKey(value, key)) return NULL;
+    if (!coordToKeyChecked(value, key)) return NULL;
     return updateNode(key);
   }
 
@@ -96,14 +89,14 @@ namespace octomap {
   // Note: do not inline this method, will decrease speed (KMW)
   CountingOcTreeNode* CountingOcTree::updateNode(const OcTreeKey& k) {
 
-    CountingOcTreeNode* curNode (itsRoot);
+    CountingOcTreeNode* curNode (root);
     curNode->increaseCount();
-    unsigned int pos(0);
+
 
     // follow or construct nodes down to last level...
     for (int i=(tree_depth-1); i>=0; i--) {
 
-      genPos(k, i, pos);
+      unsigned int pos = computeChildIdx(k, i);
 
       // requested node does not exist
       if (!curNode->childExists(pos)) {
@@ -123,7 +116,7 @@ namespace octomap {
 
     OcTreeKey root_key;
     root_key[0] = root_key[1] = root_key[2] = this->tree_max_val;
-    getCentersMinHitsRecurs(node_centers, min_hits, this->tree_depth, this->itsRoot, 0, root_key);    
+    getCentersMinHitsRecurs(node_centers, min_hits, this->tree_depth, this->root, 0, root_key);
   }
 
 
@@ -149,9 +142,7 @@ namespace octomap {
     else { // max level reached
 
       if (node->getCount() >= min_hits) {
-        point3d p;
-        this->genCoords(parent_key, depth, p);
-        node_centers.push_back(p);        
+        node_centers.push_back(this->keyToCoord(parent_key, depth));
       }
     }
   }
