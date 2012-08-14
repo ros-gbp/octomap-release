@@ -1,7 +1,7 @@
 #ifndef OCTOMAP_OCCUPANCY_OCTREE_BASE_H
 #define OCTOMAP_OCCUPANCY_OCTREE_BASE_H
 
-// $Id: OccupancyOcTreeBase.h 365 2012-04-24 12:47:08Z ahornung $
+// $Id: OccupancyOcTreeBase.h 402 2012-08-06 13:39:42Z ahornung $
 
 /**
 * OctoMap:
@@ -41,20 +41,22 @@
  */
 
 #include <list>
-#include <fstream>
 #include <stdlib.h>
 
 #include "octomap_types.h"
 #include "octomap_utils.h"
-#include "OcTreeBase.h"
+#include "OcTreeBaseImpl.h"
+#include "AbstractOccupancyOcTree.h"
 
 
 namespace octomap {
 
   /**
-   * Base class for Occupancy Octrees (e.g. for mapping).
+   * Base implementation for Occupancy Octrees (e.g. for mapping).
+   * AbstractOccupancyOcTree serves as a common
+   * base interface for all these classes.
    * Each class used as NODE type needs to be derived from
-   * OccupancyOcTreeNode
+   * OccupancyOcTreeNode.
    *
    * This tree implementation has a maximum depth of 16. 
    * At a resolution of 1 cm, values have to be < +/- 327.68 meters (2^15)
@@ -63,14 +65,20 @@ namespace octomap {
    * method which uses the binary representation of the data.
    *
    * \note The tree does not save individual points.
+   *
+   * \tparam NODE Node class to be used in tree (usually derived from
+   *    OcTreeDataNode)
    */
   template <class NODE>
-  class OccupancyOcTreeBase : public OcTreeBase<NODE> {
+  class OccupancyOcTreeBase : public OcTreeBaseImpl<NODE,AbstractOccupancyOcTree> {
 
   public:
-
-    OccupancyOcTreeBase(double _resolution);
+    /// Default constructor, sets resolution of leafs
+    OccupancyOcTreeBase(double resolution);
     virtual ~OccupancyOcTreeBase();
+
+    /// Copy constructor
+    OccupancyOcTreeBase(const OccupancyOcTreeBase<NODE>& rhs);
 
      /**
      * Integrate a Pointcloud (in global reference frame)
@@ -199,54 +207,68 @@ namespace octomap {
    
     /**
      * Convenience function to return all occupied nodes in the OcTree.
+     * @note Deprecated, will be removed in the future.
+     * Direcly access the nodes with iterators instead!
      *
      * @param node_centers list of occpupied nodes (as point3d)
      * @param max_depth Depth limit of query. 0 (default): no depth limit
      */
-    void getOccupied(point3d_list& node_centers, unsigned int max_depth = 0) const;
+    DEPRECATED( void getOccupied(point3d_list& node_centers, unsigned int max_depth = 0) const);
     
     /**
      * Convenience function to return all occupied nodes in the OcTree.
+     * @note Deprecated, will be removed in the future.
+     * Direcly access the nodes with iterators instead!     *
      *
      * @param occupied_volumes list of occpupied nodes (as point3d and size of the volume)
      * @param max_depth Depth limit of query. 0 (default): no depth limit
      */
-    void getOccupied(std::list<OcTreeVolume>& occupied_volumes, unsigned int max_depth = 0) const;
+    DEPRECATED(void getOccupied(std::list<OcTreeVolume>& occupied_volumes, unsigned int max_depth = 0) const);
 
     /**
      * Traverses the tree and collects all OcTreeVolumes regarded as occupied.
      * Inner nodes with both occupied and free children are regarded as occupied. 
      * This should be for internal use only, use getOccupied(occupied_volumes) instead.
+     * @note Deprecated, will be removed in the future.
+     * Direcly access the nodes with iterators instead!     *
      *
      * @param binary_nodes list of binary OcTreeVolumes which are occupied
      * @param delta_nodes list of delta OcTreeVolumes which are occupied
      * @param max_depth Depth limit of query. 0 (default): no depth limit
      */
-    void getOccupied(std::list<OcTreeVolume>& binary_nodes, std::list<OcTreeVolume>& delta_nodes,
-                     unsigned int max_depth = 0) const;
+    DEPRECATED(void getOccupied(std::list<OcTreeVolume>& binary_nodes, std::list<OcTreeVolume>& delta_nodes,
+                     unsigned int max_depth = 0) const);
 
 
-    /// returns occupied leafs within a bounding box defined by min and max.
-    void getOccupiedLeafsBBX(point3d_list& node_centers, point3d min, point3d max) const;
+    /**
+     * returns occupied leafs within a bounding box defined by min and max.
+     * @note Deprecated, will be removed in the future.
+     * Direcly access the nodes with iterators instead!
+     */
+    DEPRECATED(void getOccupiedLeafsBBX(point3d_list& node_centers, point3d min, point3d max) const);
 
     /**
      * Convenience function to return all free nodes in the OcTree.
+     * @note Deprecated, will be removed in the future.
+     * Direcly access the nodes with iterators instead!
      *
      * @param free_volumes list of free nodes (as point3d and size of the volume)
      * @param max_depth Depth limit of query. 0 (default): no depth limit
      */
-    void getFreespace(std::list<OcTreeVolume>& free_volumes, unsigned int max_depth = 0) const;
+    DEPRECATED(void getFreespace(std::list<OcTreeVolume>& free_volumes, unsigned int max_depth = 0) const);
 
     /**
      * Traverses the tree and collects all OcTreeVolumes regarded as free.
      * Inner nodes with both occupied and free children are regarded as occupied.
+     * @note Deprecated, will be removed in the future.
+     * Direcly access the nodes with iterators instead!
      *
      * @param binary_nodes list of binary OcTreeVolumes which are free
      * @param delta_nodes list of delta OcTreeVolumes which are free
      * @param max_depth Depth limit of query. 0 (default): no depth limit
      */
-    void getFreespace(std::list<OcTreeVolume>& binary_nodes, std::list<OcTreeVolume>& delta_nodes, 
-                      unsigned int max_depth = 0) const;
+    DEPRECATED(void getFreespace(std::list<OcTreeVolume>& binary_nodes, std::list<OcTreeVolume>& delta_nodes,
+                      unsigned int max_depth = 0) const);
 
 
 
@@ -274,56 +296,17 @@ namespace octomap {
     /// track or ignore changes while inserting scans (default: ignore)
     void enableChangeDetection(bool enable) { use_change_detection = enable; }
     /// Reset the set of changed keys. Call this after you obtained all changed nodes.
-    void resetChangeDetection() { changedKeys.clear(); }
+    void resetChangeDetection() { changed_keys.clear(); }
 
     /**
      * Iterator to traverse all keys of changed nodes.
      * you need to enableChangeDetection() first. Here, an OcTreeKey always
      * refers to a node at the lowest tree level (its size is the minimum tree resolution)
      */
-    KeyBoolMap::const_iterator changedKeysBegin() {return changedKeys.begin();}
+    KeyBoolMap::const_iterator changedKeysBegin() {return changed_keys.begin();}
 
     /// Iterator to traverse all keys of changed nodes.
-    KeyBoolMap::const_iterator changedKeysEnd() {return changedKeys.end();}
-
-    //-- parameters for occupancy and sensor model:
-
-    /// sets the threshold for occupancy (sensor model)
-    void setOccupancyThres(double prob){occProbThresLog = logodds(prob); }
-    /// sets the probablility for a "hit" (will be converted to logodds) - sensor model
-    void setProbHit(double prob){probHitLog = logodds(prob); assert(probHitLog >= 0.0);}
-    /// sets the probablility for a "miss" (will be converted to logodds) - sensor model
-    void setProbMiss(double prob){probMissLog = logodds(prob); assert(probMissLog <= 0.0);}
-    /// sets the minimum threshold for occupancy clamping (sensor model)
-    void setClampingThresMin(double thresProb){clampingThresMin = logodds(thresProb); }
-    /// sets the maximum threshold for occupancy clamping (sensor model)
-    void setClampingThresMax(double thresProb){clampingThresMax = logodds(thresProb); }
-
-    /// @return threshold (probability) for occupancy - sensor model
-    double getOccupancyThres() const {return probability(occProbThresLog); }
-    /// @return threshold (logodds) for occupancy - sensor model
-    float getOccupancyThresLog() const {return occProbThresLog; }
-
-    /// @return probablility for a "hit" in the sensor model (probability)
-    double getProbHit() const {return probability(probHitLog); }
-    /// @return probablility for a "hit" in the sensor model (logodds)
-    float getProbHitLog() const {return probHitLog; }
-    /// @return probablility for a "miss"  in the sensor model (probability)
-    double getProbMiss() const {return probability(probMissLog); }
-    /// @return probablility for a "miss"  in the sensor model (logodds)
-    float getProbMissLog() const {return probMissLog; }
-
-    /// @return minimum threshold for occupancy clamping in the sensor model (probability)
-    double getClampingThresMin() const {return probability(clampingThresMin); }
-    /// @return minimum threshold for occupancy clamping in the sensor model (logodds)
-    float getClampingThresMinLog() const {return clampingThresMin; }
-    /// @return maximum threshold for occupancy clamping in the sensor model (probability)
-    double getClampingThresMax() const {return probability(clampingThresMax); }
-    /// @return maximum threshold for occupancy clamping in the sensor model (logodds)
-    float getClampingThresMaxLog() const {return clampingThresMax; }
-
-
-
+    KeyBoolMap::const_iterator changedKeysEnd() {return changed_keys.end();}
 
 
     /**
@@ -352,41 +335,12 @@ namespace octomap {
     bool readBinary(std::istream &s);
 
     /**
-     * Writes compressed maximum likelihood OcTree to a binary stream.
-     * The OcTree is first converted to the maximum likelihood estimate and pruned
-     * for maximum compression.
-     * @return success of operation
-     */
-    bool writeBinary(std::ostream &s);
-
-    /**
-     * Writes the maximum likelihood OcTree to a binary stream (const variant).
-     * Files will be smaller when the tree is pruned first or by using
-     * writeBinary() instead.
-     * @return success of operation
-     */
-    bool writeBinaryConst(std::ostream &s) const;
-
-    /**
      * Reads OcTree from a binary file.
      * Existing nodes of the tree are deleted before the tree is read.
      * @return success of operation
      */
     bool readBinary(const std::string& filename);
 
-    /**
-     * Writes OcTree to a binary file using writeBinary().
-     * The OcTree is first converted to the maximum likelihood estimate and pruned.
-     * @return success of operation
-     */
-    bool writeBinary(const std::string& filename);
-
-    /**
-     * Writes OcTree to a binary file using writeBinaryConst().
-     * The OcTree is not changed, in particular not pruned first.
-     * @return success of operation
-     */
-    bool writeBinaryConst(const std::string& filename) const;
 
     /**
      * Read node from binary stream (max-likelihood value), recursively
@@ -413,6 +367,12 @@ namespace octomap {
      */
     std::ostream& writeBinaryNode(std::ostream &s, const NODE* node) const;
 
+    /**
+     * Writes the data of the tree (without header) to the stream, recursively
+     * calling writeBinaryNode (starting with root)
+     */
+    std::ostream& writeBinaryData(std::ostream &s) const;
+
 
     void calcNumThresholdedNodes(unsigned int& num_thresholded, unsigned int& num_other) const;
 
@@ -423,15 +383,6 @@ namespace octomap {
      **/
     void updateInnerOccupancy();
 
-    /// queries whether a node is occupied according to the tree's parameter for "occupancy"
-    virtual bool isNodeOccupied(const NODE* occupancyNode) const;
-    /// queries whether a node is occupied according to the tree's parameter for "occupancy"
-    virtual bool isNodeOccupied(const NODE& occupancyNode) const;
-
-    /// queries whether a node is at the clamping threshold according to the tree's parameter
-    virtual bool isNodeAtThreshold(const NODE* occupancyNode) const;
-    /// queries whether a node is at the clamping threshold according to the tree's parameter
-    virtual bool isNodeAtThreshold(const NODE& occupancyNode) const;
 
     /// integrate a "hit" measurement according to the tree's sensor model
     virtual void integrateHit(NODE* occupancyNode) const;
@@ -446,6 +397,9 @@ namespace octomap {
     virtual void nodeToMaxLikelihood(NODE& occupancyNode) const;
 
   protected:
+    /// Constructor to enable derived classes to change tree constants.
+    /// This usually requires a re-implementation of some core tree-traversal functions as well!
+    OccupancyOcTreeBase(double resolution, unsigned int tree_depth, unsigned int tree_max_val);
 
     /**
      * Traces a ray from origin to end and updates all voxels on the
@@ -475,7 +429,6 @@ namespace octomap {
     bool readBinaryLegacyHeader(std::istream &s, unsigned int& size, double& res);
 
   protected:
-    const static std::string binaryFileHeader;
     bool use_bbx_limit;  ///< use bounding box for queries (needs to be set)?
     point3d bbx_min;
     point3d bbx_max;
@@ -484,14 +437,9 @@ namespace octomap {
 
     bool use_change_detection;
     /// Set of leaf keys (lowest level) which changed since last resetChangeDetection
-    KeyBoolMap changedKeys;
+    KeyBoolMap changed_keys;
     
-    // occupancy parameters of tree, stored in logodds:
-    float clampingThresMin;
-    float clampingThresMax;
-    float probHitLog;
-    float probMissLog;
-    float occProbThresLog;
+
   };
 
 } // namespace

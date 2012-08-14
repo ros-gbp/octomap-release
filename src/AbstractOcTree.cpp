@@ -1,15 +1,15 @@
-// $Id: AbstractOcTree.cpp 332 2011-12-13 12:49:39Z ahornung $
+// $Id: AbstractOcTree.cpp 401 2012-08-03 15:16:39Z ahornung $
 
 /**
 * OctoMap:
 * A probabilistic, flexible, and compact 3D mapping library for robotic systems.
-* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009-2011
+* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009-2012
 * @see http://octomap.sourceforge.net/
 * License: New BSD License
 */
 
 /*
- * Copyright (c) 2009-2011, K. M. Wurm, A. Hornung, University of Freiburg
+ * Copyright (c) 2009-2012, K. M. Wurm, A. Hornung, University of Freiburg
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,7 +72,7 @@ namespace octomap {
     s << "data" << std::endl;
 
     // write the actual data:
-    writeDataConst(s);
+    writeData(s);
     // TODO: ret.val, checks stream?
     return true;
   }
@@ -212,5 +212,4 @@ namespace octomap {
 
 
   const std::string AbstractOcTree::fileHeader = "# Octomap OcTree file";
-  const std::string AbstractOcTree::binaryFileHeader = "# Octomap OcTree binary file";
 }

@@ -1,4 +1,4 @@
-// $Id: convert_octree.cpp 352 2012-03-22 13:23:43Z ahornung $
+// $Id: convert_octree.cpp 379 2012-05-25 14:22:01Z ahornung $
 
 /**
 * OctoMap:
@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
     exit(-1);
   }
 
-  int streampos = file.tellg();
+  std::istream::pos_type streampos = file.tellg();
   AbstractOcTree* tree;
 
   // reading binary:
