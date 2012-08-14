@@ -1,4 +1,4 @@
-// $Id: OcTreeStamped.cpp 332 2011-12-13 12:49:39Z ahornung $
+// $Id: OcTreeStamped.cpp 397 2012-08-02 13:34:36Z ahornung $
 
 /**
 * OctoMap:
@@ -41,16 +41,10 @@
 
 namespace octomap {
 
-  OcTreeStamped::OcTreeStamped(double _resolution)
-    : OccupancyOcTreeBase<OcTreeNodeStamped> (_resolution)  {
-    itsRoot = new OcTreeNodeStamped();
-    tree_size++;
-  }
-
   unsigned int OcTreeStamped::getLastUpdateTime() {
     // this value is updated whenever inner nodes are 
     // updated using updateOccupancyChildren()
-    return itsRoot->getTimestamp();
+    return root->getTimestamp();
   }
 
   void OcTreeStamped::degradeOutdatedNodes(unsigned int time_thres) {
@@ -71,7 +65,7 @@ namespace octomap {
   }
 
   void OcTreeStamped::integrateMissNoTime(OcTreeNodeStamped* node) const{
-    OccupancyOcTreeBase<OcTreeNodeStamped>::updateNodeLogOdds(node, probMissLog);
+    OccupancyOcTreeBase<OcTreeNodeStamped>::updateNodeLogOdds(node, prob_miss_log);
   }
 
   OcTreeStamped::StaticMemberInitializer OcTreeStamped::ocTreeStampedMemberInit;
