@@ -1,7 +1,7 @@
-#ifndef OCTOMAP_ABSTRACT_OCTREE
-#define OCTOMAP_ABSTRACT_OCTREE
+#ifndef OCTOMAP_ABSTRACT_OCTREE_H
+#define OCTOMAP_ABSTRACT_OCTREE_H
 
-// $Id: AbstractOcTree.h 403 2012-08-10 08:50:21Z ahornung $
+// $Id: AbstractOcTree.h 408 2012-08-22 09:59:55Z ahornung $
 
 /**
 * OctoMap:
