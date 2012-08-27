@@ -1,7 +1,7 @@
 #ifndef OCTOMAP_OCTREE_BASE_IMPL_H
 #define OCTOMAP_OCTREE_BASE_IMPL_H
 
-// $Id: OcTreeBaseImpl.h 402 2012-08-06 13:39:42Z ahornung $
+// $Id: OcTreeBaseImpl.h 416 2012-08-27 12:43:01Z ahornung $
 
 /**
 * OctoMap:
@@ -174,15 +174,15 @@ namespace octomap {
 
     double volume();
 
-    /// Size of OcTree in meters for x, y and z dimension
+    /// Size of OcTree (all known space) in meters for x, y and z dimension
     virtual void getMetricSize(double& x, double& y, double& z);
-    /// minimum value in x, y, z
+    /// minimum value of the bounding box of all known space in x, y, z
     virtual void getMetricMin(double& x, double& y, double& z);
-    /// minimum value in x, y, z
+    /// minimum value of the bounding box of all known space in x, y, z
     void getMetricMin(double& x, double& y, double& z) const;
-    /// maximum value in x, y, z
+    /// maximum value of the bounding box of all known space in x, y, z
     virtual void getMetricMax(double& x, double& y, double& z);
-    /// maximum value in x, y, z
+    /// maximum value of the bounding box of all known space in x, y, z
     void getMetricMax(double& x, double& y, double& z) const;
 
     /// Traverses the tree to calculate the total number of nodes

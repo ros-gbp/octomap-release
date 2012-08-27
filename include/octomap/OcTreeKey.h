@@ -1,7 +1,7 @@
 #ifndef OCTOMAP_OCTREE_KEY_H
 #define OCTOMAP_OCTREE_KEY_H
 
-// $Id: OcTreeKey.h 384 2012-06-12 08:37:33Z ahornung $
+// $Id: OcTreeKey.h 416 2012-08-27 12:43:01Z ahornung $
 
 /**
 * OctoMap:
@@ -52,7 +52,9 @@
 namespace octomap {
 
   /**
-   * OcTreeKey is a container class for internal key addressing
+   * OcTreeKey is a container class for internal key addressing. The keys count the
+   * number of cells (voxels) from the origin as discrete address of a voxel.
+   * @see OcTreeBaseImpl::coordToKey() and OcTreeBaseImpl::keyToCoord() for conversions.
    */
   class OcTreeKey {
     
@@ -145,6 +147,15 @@ namespace octomap {
     std::vector<OcTreeKey>::iterator end_of_ray;
   };
 
+  /**
+   * Computes the key of a child node while traversing the octree, given
+   * child index and current key
+   *
+   * @param[in] pos index of child node (0..7)
+   * @param[in] center_offset_key constant offset of octree keys
+   * @param[in] parent_key current (parent) key
+   * @param[out] child_key  computed child key
+   */
   inline void computeChildKey (const unsigned int& pos, const unsigned short int& center_offset_key,
                                           const OcTreeKey& parent_key, OcTreeKey& child_key) {
     
