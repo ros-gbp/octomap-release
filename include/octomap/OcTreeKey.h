@@ -1,7 +1,7 @@
 #ifndef OCTOMAP_OCTREE_KEY_H
 #define OCTOMAP_OCTREE_KEY_H
 
-// $Id: OcTreeKey.h 416 2012-08-27 12:43:01Z ahornung $
+// $Id: OcTreeKey.h 332 2011-12-13 12:49:39Z ahornung $
 
 /**
 * OctoMap:
@@ -52,9 +52,7 @@
 namespace octomap {
 
   /**
-   * OcTreeKey is a container class for internal key addressing. The keys count the
-   * number of cells (voxels) from the origin as discrete address of a voxel.
-   * @see OcTreeBaseImpl::coordToKey() and OcTreeBaseImpl::keyToCoord() for conversions.
+   * OcTreeKey is a container class for internal key addressing
    */
   class OcTreeKey {
     
@@ -147,15 +145,6 @@ namespace octomap {
     std::vector<OcTreeKey>::iterator end_of_ray;
   };
 
-  /**
-   * Computes the key of a child node while traversing the octree, given
-   * child index and current key
-   *
-   * @param[in] pos index of child node (0..7)
-   * @param[in] center_offset_key constant offset of octree keys
-   * @param[in] parent_key current (parent) key
-   * @param[out] child_key  computed child key
-   */
   inline void computeChildKey (const unsigned int& pos, const unsigned short int& center_offset_key,
                                           const OcTreeKey& parent_key, OcTreeKey& child_key) {
     
@@ -169,31 +158,6 @@ namespace octomap {
     else         child_key[2] = parent_key[2] - center_offset_key - (center_offset_key ? 0 : 1);
   }
   
-  /// generate child index (between 0 and 7) from key at given tree depth
-  inline unsigned char computeChildIdx(const OcTreeKey& key, int depth){
-    unsigned char pos = 0;
-    if (key.k[0] & (1 << depth)) pos += 1;
-    if (key.k[1] & (1 << depth)) pos += 2;
-    if (key.k[2] & (1 << depth)) pos += 4;
-    return pos;
-  }
-
-  /**
-   * Generates a unique key for all keys on a certain level of the tree
-   *
-   * @param level from the bottom (= tree_depth - depth of key)
-   * @param key input indexing key (at lowest resolution / level)
-   * @return key corresponding to the input key at the given level
-   */
-  inline OcTreeKey computeIndexKey(unsigned short int level, const OcTreeKey& key) {
-    unsigned short int mask = 65535 << level;
-    OcTreeKey result = key;
-    result[0] &= mask;
-    result[1] &= mask;
-    result[2] &= mask;
-    return result;
-  }
-
 } // namespace
 
 #endif

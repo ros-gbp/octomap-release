@@ -1,4 +1,4 @@
-// $Id: bt2vrml.cpp 373 2012-05-07 08:36:18Z ahornung $
+// $Id: bt2vrml.cpp 252 2011-08-15 13:10:00Z ahornung $
 
 /**
 * OctoMap:
@@ -75,33 +75,30 @@ int main(int argc, char** argv) {
   // TODO: check if file exists and if OcTree read correctly?
   OcTree* tree = new OcTree(btFilename);
 
+  std::list<OcTreeVolume> occupiedVoxels;
+  tree->getOccupied(occupiedVoxels);
+  delete tree;
 
-  cout << "\nWriting occupied volumes to VRML\n===========================\n";
+  cout << "\nWriting " << occupiedVoxels.size()<<" occupied volumes to VRML\n===========================\n";
 
   std::ofstream outfile (vrmlFilename.c_str());
 
   outfile << "#VRML V2.0 utf8\n#\n";
   outfile << "# created from OctoMap file "<<btFilename<< " with bt2vrml\n";
 
+  std::list<OcTreeVolume>::iterator it;
 
-  size_t count(0);
-  for(OcTree::leaf_iterator it = tree->begin(), end=tree->end(); it!= end; ++it) {
-    if(tree->isNodeOccupied(*it)){
-      count++;
-      double size = it.getSize();
-      outfile << "Transform { translation "
-          << it.getX() << " " << it.getY() << " " << it.getZ()
+  for (it = occupiedVoxels.begin(); it != occupiedVoxels.end(); ++it){
+    outfile << "Transform { translation "
+          << it->first.x() << " " << it->first.y() << " " << it->first.z()
           << " \n  children ["
           << " Shape { geometry Box { size "
-          << size << " " << size << " " << size << "} } ]\n"
+          << it->second << " " << it->second << " " << it->second << "} } ]\n"
           << "}\n";
-    }
   }
-
-  delete tree;
 
   outfile.close();
 
-  std::cout << "Finished writing "<< count << " voxels to " << vrmlFilename << std::endl;
+  std::cout << "Finished writing to " << vrmlFilename << std::endl;
 
 }

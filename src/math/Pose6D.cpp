@@ -1,4 +1,4 @@
-// $Id: Pose6D.cpp 371 2012-05-02 15:52:02Z ahornung $
+// $Id: Pose6D.cpp 269 2011-08-18 16:00:50Z kai_wurm $
 
 /**
 * OctoMap:
@@ -107,6 +107,12 @@ namespace octomath {
     double dist_z = z() - other.z();
     return sqrt(dist_x*dist_x + dist_y*dist_y + dist_z*dist_z);
   }
+
+
+  double Pose6D::TransLength() const {
+    return transLength();
+  }
+
 
   double Pose6D::transLength() const {
     return sqrt(x()*x() + y()*y() + z()*z());

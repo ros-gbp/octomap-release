@@ -1,4 +1,4 @@
-// $Id: MapCollection.hxx 402 2012-08-06 13:39:42Z ahornung $
+// $Id: OcTree.cpp 252 2011-08-15 13:10:00Z ahornung $
 
 /**
  * OctoMap:

@@ -1,7 +1,7 @@
 #ifndef OCTOMAP_COLOR_OCTREE_H
 #define OCTOMAP_COLOR_OCTREE_H
 
-// $Id: ColorOcTree.h 402 2012-08-06 13:39:42Z ahornung $
+// $Id:  $
 
 /**
  * OctoMap:
@@ -65,13 +65,7 @@ namespace octomap {
     };
 
   public:
-    ColorOcTreeNode() : OcTreeNode() {}
-
-    ColorOcTreeNode(const ColorOcTreeNode& rhs) : OcTreeNode(rhs), color(rhs.color) {}
-
-    bool operator==(const ColorOcTreeNode& rhs) const{
-      return (rhs.value == value && rhs.color == color);
-    }
+    ColorOcTreeNode() : OcTreeNode() {}     
     
     // children
     inline ColorOcTreeNode* getChild(unsigned int i) {
@@ -80,10 +74,9 @@ namespace octomap {
     inline const ColorOcTreeNode* getChild(unsigned int i) const {
       return static_cast<const ColorOcTreeNode*> (OcTreeNode::getChild(i));
     }
-
     bool createChild(unsigned int i) {
-      if (children == NULL) allocChildren();
-      children[i] = new ColorOcTreeNode();
+      if (itsChildren == NULL) allocChildren();      
+      itsChildren[i] = new ColorOcTreeNode();
       return true;
     }
 
@@ -121,9 +114,8 @@ namespace octomap {
   class ColorOcTree : public OccupancyOcTreeBase <ColorOcTreeNode> {
 
   public:
-    /// Default constructor, sets resolution of leafs
-    ColorOcTree(double resolution) : OccupancyOcTreeBase<ColorOcTreeNode>(resolution) {};  
-      
+    ColorOcTree(double _resolution);
+
     /// virtual constructor: creates a new object of same type
     /// (Covariant return type requires an up-to-date compiler)
     ColorOcTree* create() const {return new ColorOcTree(resolution); }
@@ -138,7 +130,7 @@ namespace octomap {
                                  const float& z, const unsigned char& r, 
                                  const unsigned char& g, const unsigned char& b) {
       OcTreeKey key;
-      if (!this->coordToKeyChecked(point3d(x,y,z), key)) return NULL;
+      if (!this->genKey(point3d(x,y,z), key)) return NULL;
       return setNodeColor(key,r,g,b);
     }
 
@@ -150,7 +142,7 @@ namespace octomap {
                                       const float& z, const unsigned char& r, 
                                       const unsigned char& g, const unsigned char& b) {
       OcTreeKey key;
-      if (!this->coordToKeyChecked(point3d(x,y,z), key)) return NULL;
+      if (!this->genKey(point3d(x,y,z), key)) return NULL;
       return averageNodeColor(key,r,g,b);
     }
 
@@ -162,7 +154,7 @@ namespace octomap {
                                       const float& z, const unsigned char& r, 
                                       const unsigned char& g, const unsigned char& b) {
       OcTreeKey key;
-      if (!this->coordToKeyChecked(point3d(x,y,z), key)) return NULL;
+      if (!this->genKey(point3d(x,y,z), key)) return NULL;
       return integrateNodeColor(key,r,g,b);
     }
 
