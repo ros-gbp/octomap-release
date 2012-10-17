@@ -1,4 +1,4 @@
-// $Id: convert_octree.cpp 352 2012-03-22 13:23:43Z ahornung $
+// $Id: convert_octree.cpp 416 2012-08-27 12:43:01Z ahornung $
 
 /**
 * OctoMap:
@@ -50,10 +50,11 @@ using namespace std;
 using namespace octomap;
 
 void printUsage(char* self){
-  std::cerr << "\nUSAGE: " << self << " input.ot [output.bt]\n\n";
+  std::cerr << "\nUSAGE: " << self << " input.(ot|bt|cot) [output.ot]\n\n";
 
   std::cerr << "This tool converts between OctoMap octree file formats, \n"
-      "e.g. to convert old legacy files to the new .ot format.\n\n";
+      "e.g. to convert old legacy files to the new .ot format or to convert \n"
+      "between .bt and .ot files. The default output format is .ot.\n\n";
 
   exit(0);
 }
@@ -82,7 +83,7 @@ int main(int argc, char** argv) {
     exit(-1);
   }
 
-  int streampos = file.tellg();
+  std::istream::pos_type streampos = file.tellg();
   AbstractOcTree* tree;
 
   // reading binary:
@@ -125,28 +126,16 @@ int main(int argc, char** argv) {
 
   if (outputFilename.length() > 3 && (outputFilename.compare(outputFilename.length()-3, 3, ".bt") == 0)){
     std::cerr << "Writing binary (BonsaiTree) file" << std::endl;
-    OcTree* octree = dynamic_cast<OcTree*>(tree);
+    AbstractOccupancyOcTree* octree = dynamic_cast<AbstractOccupancyOcTree*>(tree);
     if (octree){
       if (!octree->writeBinary(outputFilename)){
         std::cerr << "Error writing to " << outputFilename << std::endl;
         exit(-2);
       }
-
     } else {
-      ColorOcTree* colorTree = dynamic_cast<ColorOcTree*>(tree);
-      if (!colorTree){
-        std::cerr << "Error: Writing to .bt is not supported for this tree type" << std::endl;
-        exit(-2);
-      }
-
-      if (!colorTree->writeBinary(outputFilename)){
-        std::cerr << "Error writing ColorOcTree to " << outputFilename << std::endl;
-        exit(-2);
-      }
+      std::cerr << "Error: Writing to .bt is not supported for this tree type: " << tree->getTreeType() << std::endl;
+      exit(-2);
     }
-
-
-
   } else{
     std::cerr << "Writing general OcTree file" << std::endl;
     if (!tree->write(outputFilename)){
