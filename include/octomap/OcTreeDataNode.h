@@ -1,7 +1,7 @@
 #ifndef OCTOMAP_OCTREE_DATA_NODE_H
 #define OCTOMAP_OCTREE_DATA_NODE_H
 
-// $Id: OcTreeDataNode.h 208 2011-06-16 13:19:49Z ahornung $
+// $Id: OcTreeDataNode.h 401 2012-08-03 15:16:39Z ahornung $
 
 /**
 * OctoMap:
@@ -46,19 +46,31 @@
 
 namespace octomap {
 
+  class AbstractOcTreeNode {
+
+
+  };
+
   /**
    * Basic node in the OcTree that can hold arbitrary data of type T in value.
    * This is the base class for nodes used in an OcTree. The used implementation
-   * for occupancy mapping is in OcTreeNode.
+   * for occupancy mapping is in OcTreeNode.#
+   * \tparam T data to be stored in the node (e.g. a float for probabilities)
    *
    */
-  template<typename T> class OcTreeDataNode {
+  template<typename T> class OcTreeDataNode: public AbstractOcTreeNode {
 
   public:
 
     OcTreeDataNode();
     OcTreeDataNode(T initVal);
+    /// Copy constructor, performs a recursive deep-copy of all children
+    OcTreeDataNode(const OcTreeDataNode& rhs);
+
     ~OcTreeDataNode();
+
+    /// Equals operator, compares if the stored value is identical
+    bool operator==(const OcTreeDataNode& rhs) const;
 
 
     // -- children  ----------------------------------
@@ -82,6 +94,9 @@ namespace octomap {
     /// A node is collapsible if all children exist, don't have children of their own
     /// and have the same occupancy value
     bool collapsible() const;
+
+    /// Deletes the i-th child of the node
+    void deleteChild(unsigned int i);
 
     // -- pruning of children  -----------------------
 
@@ -137,8 +152,8 @@ namespace octomap {
     void allocChildren();
 
     /// pointer to array of children, may be NULL
-    OcTreeDataNode<T>** itsChildren;
-    /// stored data
+    OcTreeDataNode<T>** children;
+    /// stored data (payload)
     T value;
 
   };

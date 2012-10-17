@@ -1,4 +1,4 @@
-// $Id: OcTree.cpp 332 2011-12-13 12:49:39Z ahornung $
+// $Id: OcTree.cpp 390 2012-06-21 09:58:07Z ahornung $
 
 /**
 * OctoMap:
@@ -42,17 +42,8 @@
 
 namespace octomap {
 
-  OcTree::OcTree(double _resolution)
-    : OccupancyOcTreeBase<OcTreeNode> (_resolution)  {
-    itsRoot = new OcTreeNode();
-    tree_size++;
-  }
-
   OcTree::OcTree(std::string _filename)
     : OccupancyOcTreeBase<OcTreeNode> (0.1)  { // resolution will be set according to tree file
-    itsRoot = new OcTreeNode();
-    tree_size++;
-
     readBinary(_filename);
   }
 

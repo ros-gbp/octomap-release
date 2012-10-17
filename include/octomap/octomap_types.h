@@ -1,4 +1,4 @@
-// $Id: octomap_types.h 366 2012-04-24 14:33:26Z ahornung $
+// $Id: octomap_types.h 436 2012-10-15 10:18:16Z ahornung $
 
 /**
 * OctoMap:
@@ -49,9 +49,9 @@
 
 namespace octomap {
 
-  /// use our Vector3 as point3d in octomap
+  ///Use Vector3 (float precision) as a point3d in octomap
   typedef octomath::Vector3               point3d;
-  /// use our Pose6D as pose6d in octomap
+  /// Use our Pose6D (float precision) as pose6d in octomap
   typedef octomath::Pose6D                pose6d;
 
   typedef std::vector<octomath::Vector3>  point3d_collection;
@@ -76,7 +76,9 @@ namespace octomap {
   #else
     // no debug output if not in debug mode:
     #ifdef NDEBUG
-      #define OCTOMAP_NODEBUGOUT
+      #ifndef OCTOMAP_NODEBUGOUT
+        #define OCTOMAP_NODEBUGOUT
+      #endif
     #endif
 
     #ifdef OCTOMAP_NODEBUGOUT
