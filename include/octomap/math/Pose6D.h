@@ -1,4 +1,4 @@
-// $Id: Pose6D.h 371 2012-05-02 15:52:02Z ahornung $
+// $Id: Pose6D.h 269 2011-08-18 16:00:50Z kai_wurm $
 
 /**
 * OctoMap:
@@ -72,7 +72,7 @@ namespace octomath {
      * its x, y, z-values and a rotation represented by its
      * Tait-Bryan angles roll, pitch, and yaw
      */
-    Pose6D(float x, float y, float z, double roll, double pitch, double yaw);
+	Pose6D(float x, float y, float z, double roll, double pitch, double yaw);
 
     Pose6D& operator= (const Pose6D& other);
     bool operator==(const Pose6D& other) const;
@@ -131,6 +131,7 @@ namespace octomath {
      * @return a copy of this pose inverted
      */
     Pose6D inv() const;
+    DEPRECATED( Pose6D invert() const ) { return inv(); } // for inversion with copy use inv()
 
     /*!
      * \brief Inversion
@@ -139,6 +140,7 @@ namespace octomath {
      * @return a reference to this pose
      */
     Pose6D& inv_IP();
+    DEPRECATED( Pose6D& invert_IP() ) { return inv_IP(); } // for inversion in place use inv_IP()
 
     /*!
      * \brief Concatenation
@@ -171,6 +173,7 @@ namespace octomath {
      * vector of this Pose6D
      */
     double transLength() const;
+    DEPRECATED( double TransLength() const ); // use 'transLength' instead
 
     /*!
      * \brief Output operator

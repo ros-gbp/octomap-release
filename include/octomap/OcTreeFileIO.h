@@ -1,4 +1,7 @@
-// $Id: octomap_utils.h 269 2011-08-18 16:00:50Z kai_wurm $
+#ifndef OCTOMAP_OCTREE_FILEIO_H
+#define OCTOMAP_OCTREE_FILEIO_H
+
+// $Id: OcTreeFileIO.h 332 2011-12-13 12:49:39Z ahornung $
 
 /**
 * OctoMap:
@@ -37,23 +40,43 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef OCTOMAP_UTILS_H_
-#define OCTOMAP_UTILS_H_
 
-namespace octomap{
+#include <octomap/AbstractOcTree.h>
+#include <octomap/octomap_types.h>
 
-  /// compute log-odds from probability:
-  inline float logodds(double probability){
-    return (float) log(probability/(1-probability));
-  }
 
-  /// compute probability from logodds:
-  inline double probability(double logodds){
-    return 1. - ( 1. / (1. + exp(logodds)));
 
-  }
+namespace octomap {
+
+  /**
+   * Class for reading and writing OcTrees to files.
+   * @note This class is deprecated and will be removed in the future.
+   * Use read and write directly in AbstractOcTree instead.
+   *
+   *
+   */
+
+  class OcTreeFileIO {
+  public:
+    OcTreeFileIO() {};
+    ~OcTreeFileIO() {};
+
+    /// Deprecated, use tree->write() instead
+    DEPRECATED( bool write(const AbstractOcTree* tree, const std::string& filename) );
+    /// Deprecated, use tree->write() instead
+    DEPRECATED( std::ostream& write(const AbstractOcTree* tree, std::ostream& s) );
+    /// Deprecated, AbstractOcTree::read() instead
+    DEPRECATED( AbstractOcTree* read(const std::string& filename) );
+    /// Deprecated, AbstractOcTree::read() instead
+    DEPRECATED( std::istream& read(std::istream& s, AbstractOcTree*& tree) );
+
+
+
+  protected:
+
+
+  };
 }
 
 
-
-#endif /* OCTOMAP_UTILS_H_ */
+#endif

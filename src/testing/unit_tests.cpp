@@ -113,8 +113,47 @@ int main(int argc, char** argv) {
       point_on_surface.rotate_IP (0,DEG2RAD(1.),0);
     }
     EXPECT_TRUE (tree.writeBinary("sphere.bt"));
+  // ------------------------------------------------------------
+  // tree read file test
+  } else if (test_name == "ReadTree") {
+    OcTree tree (0.05);  
+    EXPECT_TRUE (tree.readBinary("sphere.bt"));
     EXPECT_EQ ((int) tree.size(), 51740);
+  // ------------------------------------------------------------
+  // data file read/write test
+  } else if (test_name == "DataTreeIO") {
+
+    OcTree tree (0.05);
+    point3d origin (0.01f, 0.01f, 0.02f);
+    point3d point_on_surface (2.01f,0.01f,0.01f);
   
+    for (int i=0; i<360; i++) {    
+      for (int j=0; j<360; j++) {
+        EXPECT_TRUE (tree.insertRay(origin, origin+point_on_surface));
+        point_on_surface.rotate_IP (0,0,DEG2RAD(1.));
+      }
+      point_on_surface.rotate_IP (0,DEG2RAD(1.),0);
+    }
+
+    unsigned int tree_size = tree.size();
+    cout << "tree size: " << tree_size << endl; 
+    std::string filename ("sphere.ot");
+    std::ofstream outfile(filename.c_str(), std::ios_base::out | std::ios_base::binary);
+    EXPECT_TRUE (outfile.is_open());
+    tree.writeDataConst(outfile);
+    outfile.close();
+    cout << "tree written "<< filename <<"\n";
+
+    // read tree file
+    std::ifstream infile(filename.c_str(), std::ios_base::in |std::ios_base::binary);
+    EXPECT_TRUE (infile.is_open());
+    OcTree read_tree (0.1);
+    read_tree.readData(infile);
+    infile.close();
+    cout << "tree read from "<< filename <<"\n";
+    unsigned int read_tree_size = read_tree.size();
+    cout << "size of tree read from file: " << read_tree_size << endl; 
+    EXPECT_EQ (tree_size, read_tree_size);
   // ------------------------------------------------------------
   // ray casting
   } else if (test_name == "CastRay") {
@@ -127,7 +166,7 @@ int main(int argc, char** argv) {
     unsigned int hits (0);
     unsigned int misses (0);
     double mean_dist(0);
-
+    
     for (int i=0; i<360; i++) {    
       for (int j=0; j<360; j++) {
         if (!tree.castRay(origin, direction, obstacle, true, 3.)) {
@@ -143,14 +182,14 @@ int main(int argc, char** argv) {
       direction.rotate_IP (0,DEG2RAD(1.),0);
     }
     EXPECT_TRUE (sampled_surface.writeBinary("sampled_surface.bt"));
-  
+    
     mean_dist /= (double) hits;
     EXPECT_NEAR(mean_dist, 2., 0.1);
-  
+    
     EXPECT_EQ ((int) hits, 129416);
     EXPECT_EQ ((int) misses,  184);
-
-
+    
+    
     double res = 0.1;
     double res_2 = res/2.0;
     OcTree cubeTree(res);
@@ -166,13 +205,13 @@ int main(int argc, char** argv) {
         }
       }
     }
-
+    
     // fill some "floor":
-    EXPECT_TRUE(cubeTree.updateNode(res_2,res_2,-res_2, true));
-    EXPECT_TRUE(cubeTree.updateNode(3*res_2,res_2,-res_2, true));
-    EXPECT_TRUE(cubeTree.updateNode(-res_2,res_2,-res_2, true));
-    EXPECT_TRUE(cubeTree.updateNode(-3*res_2,res_2,-res_2, true));
-
+    EXPECT_TRUE(cubeTree.updateNode(point3d(res_2,res_2,-res_2), true));
+    EXPECT_TRUE(cubeTree.updateNode(point3d(3*res_2,res_2,-res_2), true));
+    EXPECT_TRUE(cubeTree.updateNode(point3d(-res_2,res_2,-res_2), true));
+    EXPECT_TRUE(cubeTree.updateNode(point3d(-3*res_2,res_2,-res_2), true));
+    
     cubeTree.writeBinary("raycasting_cube.bt");
     origin = point3d(0.0f, 0.0f, 0.0f);
     point3d end;
@@ -185,8 +224,8 @@ int main(int argc, char** argv) {
     EXPECT_TRUE(cubeTree.castRay(origin, direction, end, false));
     EXPECT_TRUE(cubeTree.isNodeOccupied(cubeTree.search(end)));
     std::cout << "Hit occupied voxel: " << end << std::endl;
-    EXPECT_NEAR(1.0, (origin - end).norm(), res_2);
-
+    EXPECT_NEAR(1.0, (origin - end).norm(), res);
+    
     // hit bottom:
     origin = point3d(res_2, res_2, 0.5f);
     direction = point3d(0.0, 0.0, -1.0f);
@@ -196,15 +235,15 @@ int main(int argc, char** argv) {
     EXPECT_FLOAT_EQ(origin(0), end(0));
     EXPECT_FLOAT_EQ(origin(1), end(1));
     EXPECT_FLOAT_EQ(-res_2, end(2));
-
-
+    
+    
     // hit boundary of unknown:
     origin = point3d(0.0f, 0.0f, 0.0f);
     direction = point3d(0.0f, 1.0f, 0.0f);
     EXPECT_FALSE(cubeTree.castRay(origin, direction, end, false));
     EXPECT_FALSE(cubeTree.search(end));
     std::cout << "Boundary unknown hit: " << end << std::endl;
-
+    
     // hit boundary of octree:
     EXPECT_FALSE(cubeTree.castRay(origin, direction, end, true));
     EXPECT_FALSE(cubeTree.search(end));
@@ -217,7 +256,7 @@ int main(int argc, char** argv) {
     EXPECT_FLOAT_EQ(end.x(), float(-32767*res-res_2));
     EXPECT_FLOAT_EQ(end.y(), res_2);
     EXPECT_FLOAT_EQ(end.z(), res_2);
-
+    
     // test maxrange:
     EXPECT_FALSE(cubeTree.castRay(origin, direction, end, true, 0.9));
     std::cout << "Max range endpoint: " << end << std::endl;
@@ -297,8 +336,9 @@ int main(int argc, char** argv) {
     OcTree tree (0.05);  
     point3d p(0.0,0.0,0.0);
     OcTreeKey key;
-    tree.coordToKeyChecked(p, key);
-    point3d p_inv = tree.keyToCoord(key);
+    tree.genKey(p, key);
+    point3d p_inv;
+    tree.genCoords(key, tree.getTreeDepth(), p_inv);
     EXPECT_FLOAT_EQ (0.025, p_inv.x());
     EXPECT_FLOAT_EQ (0.025, p_inv.y());
     EXPECT_FLOAT_EQ (0.025, p_inv.z());
@@ -311,8 +351,9 @@ int main(int argc, char** argv) {
 	   end=tree.end(); it!= end; ++it){
       point3d p = it.getCoordinate();
       OcTreeKey key;
-      tree.coordToKeyChecked(p, key);
-      point3d p_inv = tree.keyToCoord(key, it.getDepth());
+      tree.genKey(p, key);
+      point3d p_inv;
+      tree.genCoords(key, it.getDepth(), p_inv);
       EXPECT_FLOAT_EQ (p.x(), p_inv.x());
       EXPECT_FLOAT_EQ (p.y(), p_inv.y());
       EXPECT_FLOAT_EQ (p.z(), p_inv.z());

@@ -2,7 +2,7 @@
 Octomap
 - A probabilistic, flexible, and compact 3D mapping library for robotic systems.
 
-Authors: Kai M. Wurm and Armin Hornung, University of Freiburg, Copyright (C) 2009-2012.
+Authors: K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009-2012.
 http://octomap.sourceforge.net/
 
 Further Contributors:
@@ -12,7 +12,10 @@ S. Osswald, University of Freiburg
 R. Schmitt, University of Freiburg
 R. Bogdan Rusu, Willow Garage Inc.
 
-License for octomap: New BSD License (see LICENSE.txt)
+License: 
+  * New BSD License (see LICENSE.txt in /octomap)
+  * The viewer "octovis" and all related libraries are licensed under the GPL 
+    (see LICENSE.txt in /octovis).
 
 
 REQUIREMENTS
@@ -32,15 +35,19 @@ REQUIREMENTS
 
  Hint: you can install all dependencies on Ubuntu by running:
 
-    sudo apt-get install cmake doxygen libqt4-dev libqt4-opengl-dev libqglviewer-qt4-dev
+       sudo apt-get install cmake doxygen libqt4-dev libqt4-opengl-dev
        
+If you are running Ubuntu 9.10 or later, you can use its supplied
+version of qglviewer, otherwise it will be compiled from source. 
+To install it:
 
-       
+       sudo apt-get install libqglviewer-qt4-dev
+
+
 INSTALLATION
 ############################
- 
- * See http://www.ros.org/wiki/octomap if you want to use OctoMap in ROS! There  *
- * are pre-compiled packages for octomap, octovis, and ROS integration available *
+
+ * See http://www.ros.org/wiki/octomap if you want to use OctoMap in ROS! *
 
 Build the complete project by changing into the "build" directory 
 and running cmake:
@@ -61,9 +68,6 @@ in "build" or a different directory (e.g. "build-debug").
 
 You can install the library by running "make install", though it 
 is not necessary. Be sure to adjust CMAKE_INSTALL_PREFIX before.
-
-The target "make test" executes the unit tests for the octomap library,
-if you are interested in verifying the functionality on your machine.
 
 
 DOCUMENTATION
@@ -115,8 +119,8 @@ link_libraries(${OCTOMAP_LIBRARIES})
 
 In addition to this cmake-module we also provide a pkgconfig-file.
 
-For convenience, there is a minimal project included in the file 
-example-project.tgz
+For convenience, there is a minimal project included in
+the file example-project.tgz
 
 
 ECLIPSE PROJECT FILES

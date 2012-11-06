@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
 
   // -----------------------------------------------
 
-  cout << "casting rays in sphere ..." << endl;
+  cout << "casting rays ..." << endl;
 
   OcTree sampled_surface (0.05);  
 

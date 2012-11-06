@@ -1,7 +1,7 @@
 #ifndef OCTOMAP_COUNTING_OCTREE_HH
 #define OCTOMAP_COUNTING_OCTREE_HH
 
-// $Id: CountingOcTree.h 391 2012-06-21 10:07:53Z ahornung $
+// $Id: CountingOcTree.h 332 2011-12-13 12:49:39Z ahornung $
 
 /**
 * OctoMap:
@@ -94,8 +94,9 @@ namespace octomap {
   class CountingOcTree : public OcTreeBase <CountingOcTreeNode> {
 
   public:
-    /// Default constructor, sets resolution of leafs
-    CountingOcTree(double resolution) : OcTreeBase<CountingOcTreeNode>(resolution) {};    
+
+    CountingOcTree(double resolution);
+
     virtual CountingOcTreeNode* updateNode(const point3d& value);
     CountingOcTreeNode* updateNode(const OcTreeKey& k);
     void getCentersMinHits(point3d_list& node_centers, unsigned int min_hits) const;

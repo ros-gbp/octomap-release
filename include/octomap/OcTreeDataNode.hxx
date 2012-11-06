@@ -1,4 +1,4 @@
-// $Id: OcTreeDataNode.hxx 397 2012-08-02 13:34:36Z ahornung $
+// $Id: OcTreeDataNode.hxx 292 2011-08-25 12:59:19Z kai_wurm $
 
 /**
 * OctoMap:
@@ -41,49 +41,28 @@ namespace octomap {
 
   template <typename T>
   OcTreeDataNode<T>::OcTreeDataNode()
-   : children(NULL)
+   : itsChildren(NULL)
   {
 
   }
 
   template <typename T>
   OcTreeDataNode<T>::OcTreeDataNode(T initVal)
-   : children(NULL), value(initVal)
+   : itsChildren(NULL), value(initVal)
   {
 
   }
-
-  template <typename T>
-  OcTreeDataNode<T>::OcTreeDataNode(const OcTreeDataNode<T>& rhs)
-   : children(NULL), value(rhs.value)
-  {
-    if (rhs.hasChildren()){
-      allocChildren();
-      for (unsigned i = 0; i<8; ++i){
-        if (rhs.children[i])
-          children[i] = new OcTreeDataNode<T>(*(rhs.children[i]));
-
-      }
-    }
-  }
-
-
 
   template <typename T>
   OcTreeDataNode<T>::~OcTreeDataNode()
   {
-    if (children != NULL) {
-      for (unsigned int i=0; i<8; i++) {
-        if (children[i] != NULL) delete children[i];
+    if (itsChildren != NULL) {
+      for (unsigned int i=0;i<8;i++) {
+        if (itsChildren[i] != NULL) delete itsChildren[i];
       }
-      delete[] children;
+      delete[] itsChildren;
     }
 
-  }
-
-  template <typename T>
-  bool OcTreeDataNode<T>::operator== (const OcTreeDataNode<T>& rhs) const{
-    return rhs.value == value;
   }
 
   // ============================================================
@@ -92,48 +71,40 @@ namespace octomap {
 
   template <typename T>
   bool OcTreeDataNode<T>::createChild(unsigned int i) {
-    if (children == NULL) {
+    if (itsChildren == NULL) {
       allocChildren();
     }
-    assert (children[i] == NULL);
-    children[i] = new OcTreeDataNode<T>();
+    assert (itsChildren[i] == NULL);
+    itsChildren[i] = new OcTreeDataNode<T>();
     return true;
   }
 
   template <typename T>
   bool OcTreeDataNode<T>::childExists(unsigned int i) const {
     assert(i < 8);
-    if ((children != NULL) && (children[i] != NULL))
+    if ((itsChildren != NULL) && (itsChildren[i] != NULL))
       return true;
     else
       return false;
   }
 
   template <typename T>
-  void OcTreeDataNode<T>::deleteChild(unsigned int i) {
-    assert((i < 8) && (children != NULL));
-    assert(children[i] != NULL);
-    delete children[i];
-    children[i] = NULL;
-  }
-
-  template <typename T>
   OcTreeDataNode<T>* OcTreeDataNode<T>::getChild(unsigned int i) {
-    assert((i < 8) && (children != NULL));
-    assert(children[i] != NULL);
-    return children[i];
+    assert((i < 8) && (itsChildren != NULL));
+    assert(itsChildren[i] != NULL);
+    return itsChildren[i];
   }
 
   template <typename T>
   const OcTreeDataNode<T>* OcTreeDataNode<T>::getChild(unsigned int i) const {
-    assert((i < 8) && (children != NULL));
-    assert(children[i] != NULL);
-    return children[i];
+    assert((i < 8) && (itsChildren != NULL));
+    assert(itsChildren[i] != NULL);
+    return itsChildren[i];
   }
 
   template <typename T>
   bool OcTreeDataNode<T>::hasChildren() const {
-    if (children == NULL) return false;
+    if (itsChildren == NULL) return false;
     for (unsigned int i = 0; i<8; i++)
       if (childExists(i)) return true;
     return false;
@@ -172,10 +143,10 @@ namespace octomap {
 
     // delete children
     for (unsigned int i=0;i<8;i++) {
-      delete children[i];
+      delete itsChildren[i];
     }
-    delete[] children;
-    children = NULL;
+    delete[] itsChildren;
+    itsChildren = NULL;
 
     return true;
   }
@@ -186,7 +157,7 @@ namespace octomap {
 
     for (unsigned int k=0; k<8; k++) {
       createChild(k);
-      children[k]->setValue(value);
+      itsChildren[k]->setValue(value);
     }
   }
 
@@ -254,9 +225,9 @@ namespace octomap {
   // ============================================================
   template <typename T>
   void OcTreeDataNode<T>::allocChildren() {
-    children = new OcTreeDataNode<T>*[8];
+    itsChildren = new OcTreeDataNode<T>*[8];
     for (unsigned int i=0; i<8; i++) {
-      children[i] = NULL;
+      itsChildren[i] = NULL;
     }
   }
 

@@ -1,7 +1,7 @@
 #ifndef OCTOMAP_OCTREE_STAMPED_H
 #define OCTOMAP_OCTREE_STAMPED_H
 
-// $Id: OcTreeStamped.h 397 2012-08-02 13:34:36Z ahornung $
+// $Id: OcTreeStamped.h 332 2011-12-13 12:49:39Z ahornung $
 
 /**
  * OctoMap:
@@ -50,13 +50,7 @@ namespace octomap {
   class OcTreeNodeStamped : public OcTreeNode {    
 
   public:
-    OcTreeNodeStamped() : OcTreeNode(), timestamp(0) {}
-
-    OcTreeNodeStamped(const OcTreeNodeStamped& rhs) : OcTreeNode(rhs), timestamp(rhs.timestamp) {}
-
-    bool operator==(const OcTreeNodeStamped& rhs) const{
-      return (rhs.value == value && rhs.timestamp == timestamp);
-    }
+    OcTreeNodeStamped() : OcTreeNode(), timestamp(0) {}     
     
     // children
     inline OcTreeNodeStamped* getChild(unsigned int i) {
@@ -65,10 +59,9 @@ namespace octomap {
     inline const OcTreeNodeStamped* getChild(unsigned int i) const {
       return static_cast<const OcTreeNodeStamped*> (OcTreeNode::getChild(i));
     }
-
     bool createChild(unsigned int i) {
-      if (children == NULL) allocChildren();
-      children[i] = new OcTreeNodeStamped();
+      if (itsChildren == NULL) allocChildren();      
+      itsChildren[i] = new OcTreeNodeStamped();
       return true;
     }
     
@@ -92,9 +85,8 @@ namespace octomap {
   class OcTreeStamped : public OccupancyOcTreeBase <OcTreeNodeStamped> {    
 
   public:
-    /// Default constructor, sets resolution of leafs
-    OcTreeStamped(double resolution) : OccupancyOcTreeBase<OcTreeNodeStamped>(resolution) {};    
-      
+    OcTreeStamped(double _resolution);
+
     /// virtual constructor: creates a new object of same type
     /// (Covariant return type requires an up-to-date compiler)
     OcTreeStamped* create() const {return new OcTreeStamped(resolution); }

@@ -1,4 +1,4 @@
-// $Id: OcTreeNode.cpp 397 2012-08-02 13:34:36Z ahornung $
+// $Id: OcTreeNode.cpp 315 2011-10-17 15:06:59Z ahornung $
 
 /**
 * OctoMap:
@@ -58,11 +58,11 @@ namespace octomap {
   // TODO: Use Curiously Recurring Template Pattern instead of copying full function
   // (same for getChild)
   bool OcTreeNode::createChild(unsigned int i) {
-    if (children == NULL) {
+    if (itsChildren == NULL) {
       allocChildren();
     }
-    assert (children[i] == NULL);
-    children[i] = new OcTreeNode();
+    assert (itsChildren[i] == NULL);
+    itsChildren[i] = new OcTreeNode();
     return true;
   }
 

@@ -1,7 +1,7 @@
-#ifndef OCTOMAP_ABSTRACT_OCTREE_H
-#define OCTOMAP_ABSTRACT_OCTREE_H
+#ifndef OCTOMAP_ABSTRACT_OCTREE
+#define OCTOMAP_ABSTRACT_OCTREE
 
-// $Id: AbstractOcTree.h 408 2012-08-22 09:59:55Z ahornung $
+// $Id:  $
 
 /**
 * OctoMap:
@@ -73,41 +73,11 @@ namespace octomap {
     virtual size_t memoryUsage() const = 0;
     virtual size_t memoryUsageNode() const = 0;
     virtual void getMetricMin(double& x, double& y, double& z) = 0;
-    virtual void getMetricMin(double& x, double& y, double& z) const = 0;
     virtual void getMetricMax(double& x, double& y, double& z) = 0;
-    virtual void getMetricMax(double& x, double& y, double& z) const = 0;
     virtual void getMetricSize(double& x, double& y, double& z) = 0;
 
     virtual void prune() = 0;
     virtual void expand() = 0;
-    virtual void clear() = 0;
-
-    //-- Iterator tree access
-
-    // default iterator is leaf_iterator
-//    class leaf_iterator;
-//    class tree_iterator;
-//    class leaf_bbx_iterator;
-//    typedef leaf_iterator iterator;
-      class iterator_base;
-//    /// @return beginning of the tree as leaf iterator
-      //virtual iterator_base begin(unsigned char maxDepth=0) const = 0;
-//    /// @return end of the tree as leaf iterator
-//    virtual const iterator end() const = 0;
-//    /// @return beginning of the tree as leaf iterator
-//    virtual leaf_iterator begin_leafs(unsigned char maxDepth=0) const = 0;
-//    /// @return end of the tree as leaf iterator
-//    virtual const leaf_iterator end_leafs() const = 0;
-//    /// @return beginning of the tree as leaf iterator in a bounding box
-//    virtual leaf_bbx_iterator begin_leafs_bbx(const OcTreeKey& min, const OcTreeKey& max, unsigned char maxDepth=0) const = 0;
-//    /// @return beginning of the tree as leaf iterator in a bounding box
-//    virtual leaf_bbx_iterator begin_leafs_bbx(const point3d& min, const point3d& max, unsigned char maxDepth=0) const = 0;
-//    /// @return end of the tree as leaf iterator in a bounding box
-//    virtual const leaf_bbx_iterator end_leafs_bbx() const = 0;
-//    /// @return beginning of the tree as iterator to all nodes (incl. inner)
-//    virtual tree_iterator begin_tree(unsigned char maxDepth=0) const = 0;
-//    /// @return end of the tree as iterator to all nodes (incl. inner)
-//    const tree_iterator end_tree() const = 0;
 
     /// Write file header and complete tree to file (serialization)
     bool write(const std::string& filename) const;
@@ -134,7 +104,6 @@ namespace octomap {
      * @endcode
      */
     static AbstractOcTree* read(const std::string& filename);
-
     /// Read the file header, create the appropriate class and deserialize.
     /// This creates a new octree which you need to delete yourself.
     static AbstractOcTree* read(std::istream &s);
@@ -146,10 +115,10 @@ namespace octomap {
      * should probably use AbstractOcTree::read() instead.
      */
     virtual std::istream& readData(std::istream &s) = 0;
-
-    /// Write complete state of tree to stream (without file header) unmodified.
-    /// Pruning the tree first produces smaller files (lossless compression)
-    virtual std::ostream& writeData(std::ostream &s) const = 0;
+    /// Write complete state of tree to stream (without file header), prune tree first (lossless compression)
+    virtual std::ostream& writeData(std::ostream &s) = 0;
+    /// Write complete state of tree to stream (without file header), no pruning (const version)
+    virtual std::ostream& writeDataConst(std::ostream &s) const = 0;
   private:
     /// create private store, Construct on first use
     static std::map<std::string, AbstractOcTree*>& classIDMapping();
@@ -159,6 +128,7 @@ namespace octomap {
     static void registerTreeType(AbstractOcTree* tree);
 
     static const std::string fileHeader;
+    static const std::string binaryFileHeader;
   };
 
 
