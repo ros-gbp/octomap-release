@@ -1,4 +1,4 @@
-// $Id: octomap_utils.h 269 2011-08-18 16:00:50Z kai_wurm $
+// $Id: octomap_utils.h 401 2012-08-03 15:16:39Z ahornung $
 
 /**
 * OctoMap:
@@ -39,6 +39,8 @@
 
 #ifndef OCTOMAP_UTILS_H_
 #define OCTOMAP_UTILS_H_
+
+#include <math.h>
 
 namespace octomap{
 

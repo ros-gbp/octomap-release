@@ -1,7 +1,7 @@
 #ifndef OCTOMAP_MAP_COLLECTION_H
 #define OCTOMAP_MAP_COLLECTION_H
 
-// $Id:  $
+// $Id: MapCollection.h 402 2012-08-06 13:39:42Z ahornung $
 
 /**
  * OctoMap:
