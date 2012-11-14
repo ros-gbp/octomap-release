@@ -1,0 +1,12 @@
+Source: ros-groovy-octomap
+Section: misc
+Priority: extra
+Maintainer: Armin Hornung <hornunga@informatik.uni-freiburg.de>
+Build-Depends: debhelper (>= 7.0.50~), ros-groovy-catkin,cmake
+Homepage: http://octomap.sf.net
+Standards-Version: 3.9.2
+
+Package: ros-groovy-octomap
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, 
+Description: The OctoMap library implements a 3D occupancy grid mapping approach, providing data structures and mapping algorithms in C++. The map implementation is based on an octree. See http://octomap.sf.net for details.
