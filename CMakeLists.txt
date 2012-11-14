@@ -1,7 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT( octomap )
 ENABLE_TESTING()
-
+find_package(catkin)
+catkin_package(LIBRARIES octomap octomath
+               INCLUDE_DIRS include
+)
 # version (e.g. for packaging)
 set(OCTOMAP_MAJOR_VERSION 1)
 set(OCTOMAP_MINOR_VERSION 5)
