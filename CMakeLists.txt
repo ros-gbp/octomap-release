@@ -1,6 +1,14 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT( octovis )
 
+find_package(catkin REQUIRED)
+catkin_package(
+  INCLUDE_DIRS
+    include
+  LIBRARIES
+    octovis-shared
+    )
+
 # # version (e.g. for packaging)
 set(OCTOVIS_MAJOR_VERSION 1)
 set(OCTOVIS_MINOR_VERSION 5)
@@ -87,10 +95,10 @@ IF(BUILD_VIEWER)
     "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config.cmake" @ONLY)
   configure_file(octovis-config-version.cmake.in
     "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config-version.cmake" @ONLY)
-  install(FILES
-    "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config.cmake"
-    "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config-version.cmake" 
-    DESTINATION share/octovis/)
+#  install(FILES
+#    "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config.cmake"
+#    "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config-version.cmake" 
+#    DESTINATION share/octovis/)
     
   # make package release from source
 	IF (NOT WIN32)
