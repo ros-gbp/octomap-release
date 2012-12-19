@@ -1,13 +1,17 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT( octovis )
 
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS octomap)
 catkin_package(
   INCLUDE_DIRS
     include
   LIBRARIES
     octovis-shared
+  CATKIN_DEPENDS
+    octomap
     )
+include_directories(${catkin_INCLUDE_DIRS})
+link_directories($catkin_LIBRARY_DIRS})
 
 # # version (e.g. for packaging)
 set(OCTOVIS_MAJOR_VERSION 1)

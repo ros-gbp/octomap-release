@@ -74,7 +74,7 @@ target_link_libraries(octovis-static)
 set_target_properties(octovis-static PROPERTIES OUTPUT_NAME octovis)
 
 add_library(octovis-shared SHARED ${viewerlib_SRCS})
-target_link_libraries(octovis-shared ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} octomath octomap ${QGLViewer_LIBRARIES})
+target_link_libraries(octovis-shared ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${catkin_LIBRARIES} ${QGLViewer_LIBRARIES})
 set_target_properties(octovis-shared PROPERTIES OUTPUT_NAME octovis)
 
 
@@ -85,7 +85,7 @@ add_executable(octovis ${viewer_SRCS} ${viewer_UIS_H} ${viewer_MOC_SRCS} ${viewe
 target_link_libraries(octovis 
 #  ${QGLViewer_LIBRARIES}
   ${QT_LIBRARIES}
-  ${OCTOMAP_LIBRARIES}
+  ${catkin_LIBRARIES} 
   octovis-shared
 )
 
