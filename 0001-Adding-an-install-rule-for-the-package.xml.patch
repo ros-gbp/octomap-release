@@ -1,0 +1,26 @@
+From 35c7104fefeb61a50167c712098686e931731d28 Mon Sep 17 00:00:00 2001
+From: William Woodall <wjwwood@gmail.com>
+Date: Fri, 4 Jan 2013 13:48:13 -0800
+Subject: [PATCH] Adding an install rule for the package.xml
+
+---
+ CMakeLists.txt |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e209fd0..361a76e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -91,6 +91,9 @@ IF(BUILD_VIEWER)
+     "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config.cmake"
+     "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config-version.cmake" 
+     DESTINATION share/octovis/)
++
++  # Install catkin package.xml
++  install(FILES package.xml DESTINATION share/octovis/)
+     
+   # make package release from source
+ 	IF (NOT WIN32)
+-- 
+1.7.10.2 (Apple Git-33)
+
