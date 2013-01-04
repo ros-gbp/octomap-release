@@ -1,0 +1,26 @@
+From c95eccece66ed58054cec386f7c90219f5ce5dc3 Mon Sep 17 00:00:00 2001
+From: William Woodall <wjwwood@gmail.com>
+Date: Fri, 4 Jan 2013 13:47:02 -0800
+Subject: [PATCH] Adding an install rule for the package.xml
+
+---
+ CMakeLists.txt |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b61cdc9..ff2b4be 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -93,6 +93,9 @@ install(FILES
+   "${PROJECT_BINARY_DIR}/InstallFiles/octomap-config-version.cmake" 
+   DESTINATION share/octomap/)
+ 
++# Install catkin package.xml
++install(FILES package.xml DESTINATION share/octomap/)
++
+ # Write pkgconfig-file:
+ include(InstallPkgConfigFile)
+ install_pkg_config_file(octomap
+-- 
+1.7.10.2 (Apple Git-33)
+
