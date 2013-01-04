@@ -1,0 +1,46 @@
+From b30b5e6a2eb70cc2181b5669454e28a8c9e97afa Mon Sep 17 00:00:00 2001
+From: Ioan Sucan <isucan@willowgarage.com>
+Date: Wed, 19 Dec 2012 11:17:15 +0200
+Subject: [PATCH 1/2] make this a catkin package
+
+---
+ CMakeLists.txt |   16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e209fd0..9a15dc4 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,6 +1,14 @@
+ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+ PROJECT( octovis )
+ 
++find_package(catkin REQUIRED)
++catkin_package(
++  INCLUDE_DIRS
++    include
++  LIBRARIES
++    octovis-shared
++    )
++
+ # # version (e.g. for packaging)
+ set(OCTOVIS_MAJOR_VERSION 1)
+ set(OCTOVIS_MINOR_VERSION 5)
+@@ -87,10 +95,10 @@ IF(BUILD_VIEWER)
+     "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config.cmake" @ONLY)
+   configure_file(octovis-config-version.cmake.in
+     "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config-version.cmake" @ONLY)
+-  install(FILES
+-    "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config.cmake"
+-    "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config-version.cmake" 
+-    DESTINATION share/octovis/)
++#  install(FILES
++#    "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config.cmake"
++#    "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config-version.cmake" 
++#    DESTINATION share/octovis/)
+     
+   # make package release from source
+ 	IF (NOT WIN32)
+-- 
+1.7.10.2 (Apple Git-33)
+
