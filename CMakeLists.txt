@@ -91,6 +91,9 @@ IF(BUILD_VIEWER)
     "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config.cmake"
     "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config-version.cmake" 
     DESTINATION share/octovis/)
+
+  # Install catkin package.xml
+  install(FILES package.xml DESTINATION share/octovis/)
     
   # make package release from source
 	IF (NOT WIN32)
