@@ -1,15 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT( octomap )
 
-find_package(catkin REQUIRED)
-catkin_package(
-  INCLUDE_DIRS
-    include
-  LIBRARIES
-    octomap
-    octomath
-    )
-
 ENABLE_TESTING()
 
 # version (e.g. for packaging)
@@ -97,18 +88,21 @@ configure_file(octomap-config.cmake.in
   "${PROJECT_BINARY_DIR}/InstallFiles/octomap-config.cmake" @ONLY)
 configure_file(octomap-config-version.cmake.in
   "${PROJECT_BINARY_DIR}/InstallFiles/octomap-config-version.cmake" @ONLY)
-#install(FILES
-#  "${PROJECT_BINARY_DIR}/InstallFiles/octomap-config.cmake"
-#  "${PROJECT_BINARY_DIR}/InstallFiles/octomap-config-version.cmake" 
-#  DESTINATION share/octomap/)
+install(FILES
+  "${PROJECT_BINARY_DIR}/InstallFiles/octomap-config.cmake"
+  "${PROJECT_BINARY_DIR}/InstallFiles/octomap-config-version.cmake" 
+  DESTINATION share/octomap/)
+
+# Install catkin package.xml
+install(FILES package.xml DESTINATION share/octomap/)
 
 # Write pkgconfig-file:
 include(InstallPkgConfigFile)
-#install_pkg_config_file(octomap
-#    CFLAGS
-#    LIBS -loctomap -loctomath
-#    REQUIRES
-#    VERSION ${OCTOMAP_VERSION})
+install_pkg_config_file(octomap
+    CFLAGS
+    LIBS -loctomap -loctomath
+    REQUIRES
+    VERSION ${OCTOMAP_VERSION})
 
 # Documentation 
 FIND_PACKAGE(Doxygen)
