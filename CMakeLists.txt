@@ -93,6 +93,9 @@ install(FILES
   "${PROJECT_BINARY_DIR}/InstallFiles/octomap-config-version.cmake" 
   DESTINATION share/octomap/)
 
+# Install catkin package.xml
+install(FILES package.xml DESTINATION share/octomap/)
+
 # Write pkgconfig-file:
 include(InstallPkgConfigFile)
 install_pkg_config_file(octomap
