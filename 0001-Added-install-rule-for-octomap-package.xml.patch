@@ -1,0 +1,26 @@
+From 23a1d1019ab7c56d028b967e4b003d940a2ba6b0 Mon Sep 17 00:00:00 2001
+From: Armin Hornung <hornunga@informatik.uni-freiburg.de>
+Date: Thu, 28 Feb 2013 11:06:31 +0100
+Subject: [PATCH] Added install rule for octomap package.xml
+
+---
+ CMakeLists.txt |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 9cd49cd..ca9d75f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -44,6 +44,9 @@ install(FILES ${octomap_HDRS}	DESTINATION include/octomap)
+ file(GLOB octomap_math_HDRS ${PROJECT_SOURCE_DIR}/include/octomap/math/*.h)
+ install(FILES ${octomap_math_HDRS}	DESTINATION include/octomap/math)
+ 
++# Install catkin package.xml
++install(FILES package.xml DESTINATION share/octomap)
++
+ # uninstall target
+ configure_file(
+     "${PROJECT_SOURCE_DIR}/CMakeModules/CMakeUninstall.cmake.in"
+-- 
+1.7.9.5
+
