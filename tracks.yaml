@@ -9,11 +9,11 @@ tracks:
     - git-bloom-generate -y rosdebian --prefix release/:{ros_distro} :{ros_distro}
       -i :{release_inc}
     devel_branch: null
-    name: upstream
-    patches: null
+    name: octomap
+    patches: groovy_patch
     release_inc: -1
-    release_tag: :{version}
+    release_tag: v:{version}
     ros_distro: groovy
     vcs_type: git
     vcs_uri: https://github.com/OctoMap/octomap.git
-    version: :{auto}
+    version: :{ask}
