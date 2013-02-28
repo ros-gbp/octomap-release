@@ -22,6 +22,10 @@ SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BASE_DIR}/lib )
 SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${BASE_DIR}/lib )
 SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BASE_DIR}/bin )
 
+# We need the main octomap library to link againt.
+# Look at parent directory by default, in case the complete distribution 
+# (octomap & octovis together) is built. 
+# Otherwise you need to export octomap_DIR to find the CMakeConfig.
 find_package(octomap REQUIRED
   HINTS ${CMAKE_SOURCE_DIR}/lib/cmake/octomap
    ${CMAKE_SOURCE_DIR}/../octomap/lib/cmake/octomap
@@ -91,9 +95,6 @@ IF(BUILD_VIEWER)
     "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config.cmake"
     "${PROJECT_BINARY_DIR}/InstallFiles/octovis-config-version.cmake" 
     DESTINATION share/octovis/)
-
-  # Install catkin package.xml
-  install(FILES package.xml DESTINATION share/octovis/)
     
   # make package release from source
 	IF (NOT WIN32)
