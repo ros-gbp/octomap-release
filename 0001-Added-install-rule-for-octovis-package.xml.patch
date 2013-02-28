@@ -1,0 +1,26 @@
+From d65b3f4c7e7cd31e905101c2ce657a0c0f7db50d Mon Sep 17 00:00:00 2001
+From: Armin Hornung <hornunga@informatik.uni-freiburg.de>
+Date: Thu, 28 Feb 2013 11:08:16 +0100
+Subject: [PATCH] Added install rule for octovis package.xml
+
+---
+ CMakeLists.txt |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index d101e96..1113df9 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -115,6 +115,9 @@ IF(BUILD_VIEWER)
+   # # store all header files to install:
+   file(GLOB octovis_HDRS  *.h *.hxx *.hpp)
+   install(FILES ${octovis_HDRS} DESTINATION include/octovis)
++
++  # Install catkin package.xml
++  install(FILES package.xml DESTINATION share/octomap)
+   
+ ELSE()
+     MESSAGE ( "Unfortunately, the viewer (octovis) can not be built because some requirements are missing.")
+-- 
+1.7.9.5
+
