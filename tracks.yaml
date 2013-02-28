@@ -1,5 +1,5 @@
 tracks:
-  convert:
+  groovy:
     actions:
     - bloom-export-upstream :{vcs_local_uri} :{vcs_type} --tag :{release_tag} --display-uri
       :{vcs_uri} --name :{name} --output-dir :{archive_dir_path}
