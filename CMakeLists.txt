@@ -6,7 +6,7 @@ ENABLE_TESTING()
 # version (e.g. for packaging)
 set(OCTOMAP_MAJOR_VERSION 1)
 set(OCTOMAP_MINOR_VERSION 5)
-set(OCTOMAP_PATCH_VERSION 1)
+set(OCTOMAP_PATCH_VERSION 4)
 set(OCTOMAP_VERSION ${OCTOMAP_MAJOR_VERSION}.${OCTOMAP_MINOR_VERSION}.${OCTOMAP_PATCH_VERSION})
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
@@ -38,12 +38,6 @@ set(INSTALL_TARGETS_DEFAULT_ARGS
 
 ADD_SUBDIRECTORY( src/math )
 ADD_SUBDIRECTORY( src )
-
-# installation for external targets:
-install(PROGRAMS "extern/binvox/binvox" DESTINATION bin)
-install(PROGRAMS "extern/binvox/binvox64" DESTINATION bin)
-install(PROGRAMS "extern/binvox/viewvox" DESTINATION bin)
-install(PROGRAMS "extern/binvox/viewvox64" DESTINATION bin)
 
 file(GLOB octomap_HDRS ${PROJECT_SOURCE_DIR}/include/octomap/*.h ${PROJECT_SOURCE_DIR}/include/octomap/*.hxx)
 install(FILES ${octomap_HDRS}	DESTINATION include/octomap)
@@ -91,7 +85,7 @@ configure_file(octomap-config-version.cmake.in
 install(FILES
   "${PROJECT_BINARY_DIR}/InstallFiles/octomap-config.cmake"
   "${PROJECT_BINARY_DIR}/InstallFiles/octomap-config-version.cmake" 
-  DESTINATION lib/cmake/octomap/)
+  DESTINATION share/octomap/)
 
 # Write pkgconfig-file:
 include(InstallPkgConfigFile)
@@ -99,7 +93,7 @@ install_pkg_config_file(octomap
     CFLAGS
     LIBS -loctomap -loctomath
     REQUIRES
-    VERSION ${OCTOMAP_MAJOR_VERSION}.${OCTOMAP_MINOR_VERSION}.${OCTOMAP_PATCH_VERSION})
+    VERSION ${OCTOMAP_VERSION})
 
 # Documentation 
 FIND_PACKAGE(Doxygen)
@@ -107,7 +101,7 @@ IF(DOXYGEN_FOUND)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/octomap.dox.in ${CMAKE_CURRENT_BINARY_DIR}/octomap.dox @ONLY)
   ADD_CUSTOM_TARGET(docs ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/octomap.dox
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    COMMENT "Generating documentation (Doxygen)...")
+    COMMENT "Generating documentation (Doxygen) at location ${PROJECT_SOURCE_DIR}/doc/html/")
 ENDIF(DOXYGEN_FOUND)
 
 # make package release from source (must be done on the SVN source tree)

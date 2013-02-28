@@ -1,16 +1,10 @@
-// $Id: OcTreeBaseImpl.hxx 436 2012-10-15 10:18:16Z ahornung $
-
-/**
-* OctoMap:
-* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
-* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009.
-* @see http://octomap.sourceforge.net/
-* License: New BSD License
-*/
-
 /*
- * Copyright (c) 2009-2011, K. M. Wurm, A. Hornung, University of Freiburg
+ * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
+ * http://octomap.github.com/
+ *
+ * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
  * All rights reserved.
+ * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -651,15 +645,17 @@ namespace octomap {
 
 
   template <class NODE,class I>
-  size_t OcTreeBaseImpl<NODE,I>::memoryFullGrid() {
+  unsigned long long OcTreeBaseImpl<NODE,I>::memoryFullGrid() const{
     double size_x, size_y, size_z;
-    getMetricSize(size_x, size_y,size_z);
+    this->getMetricSize(size_x, size_y,size_z);
     
     // assuming best case (one big array and efficient addressing)
-    return (size_t) (ceil(resolution_factor * (double) size_x) * //sizeof (unsigned int*) *
-                           ceil(resolution_factor * (double) size_y) * //sizeof (unsigned int*) *
-                           ceil(resolution_factor * (double) size_z)) *
-                           sizeof(root->getValue());
+    // we can avoid "ceil" since size already accounts for voxels
+    
+    // Note: this can be larger than the adressable memory 
+    //   - size_t may not be enough to hold it!
+    return ((size_x/resolution) * (size_y/resolution) * (size_z/resolution)
+        * sizeof(root->getValue()));
 
   }
 
@@ -669,6 +665,20 @@ namespace octomap {
 
   template <class NODE,class I>
   void OcTreeBaseImpl<NODE,I>::getMetricSize(double& x, double& y, double& z){
+
+    double minX, minY, minZ;
+    double maxX, maxY, maxZ;
+
+    getMetricMax(maxX, maxY, maxZ);
+    getMetricMin(minX, minY, minZ);
+
+    x = maxX - minX;
+    y = maxY - minY;
+    z = maxZ - minZ;
+  }
+
+  template <class NODE,class I>
+  void OcTreeBaseImpl<NODE,I>::getMetricSize(double& x, double& y, double& z) const{
 
     double minX, minY, minZ;
     double maxX, maxY, maxZ;

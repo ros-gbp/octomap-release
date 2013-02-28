@@ -1,16 +1,10 @@
-// $Id: graph2tree.cpp 350 2012-03-19 13:55:35Z ahornung $
-
-/**
-* OctoMap:
-* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
-* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009.
-* @see http://octomap.sourceforge.net/
-* License: New BSD License
-*/
-
 /*
- * Copyright (c) 2009, K. M. Wurm, A. Hornung, University of Freiburg
+ * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
+ * http://octomap.github.com/
+ *
+ * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
  * All rights reserved.
+ * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -49,24 +43,46 @@ using namespace std;
 using namespace octomap;
 
 void printUsage(char* self){
-  std::cerr << "\nUSAGE: " << self << " [options]\n\n"
-            "OPTIONS:\n-i <InputFile.graph> (required)\n"
-            "-o <OutputFile.bt> (required) \n"
-            "-res <resolution> (default: 0.1 m)\n\n"
-            "-m <maxrange> (optional) \n"
-            "-n <max scan no.> (optional) \n"
-            "-log (output a detailed log file with statistics) \n"
-            "-compress (enable lossless compression after every scan)\n"
-            "-compressML (enable maximum-likelihood compression (lossy) after every scan)\n"
+  std::cerr << "USAGE: " << self << " [options]\n\n";
+  std::cerr << "This tool is part of OctoMap and inserts the data of a scan graph\n"
+               "file (point clouds with poses) into an octree.\n"
+               "The output is a compact maximum-likelihood binary octree file \n"
+               "(.bt, bonsai tree) and general octree files (.ot) with the full\n"
+               "information.\n\n";
+
+
+  std::cerr << "OPTIONS:\n  -i <InputFile.graph> (required)\n"
+            "  -o <OutputFile.bt> (required) \n"
+            "  -res <resolution> (optional, default: 0.1 m)\n"
+            "  -m <maxrange> (optional) \n"
+            "  -n <max scan no.> (optional) \n"
+            "  -log (enable a detailed log file with statistics) \n"
+            "  -compress (enable lossless compression after every scan)\n"
+            "  -compressML (enable maximum-likelihood compression (lossy) after every scan)\n"
+            "  -clamping <p_min> <p_max> (override default sensor model clamping probabilities between 0..1)\n"
+            "  -sensor <p_miss> <p_hit> (override default sensor model hit and miss probabilities between 0..1)"
   "\n";
 
 
-  std::cerr << "This tool inserts the data of a binary graph file into an octree.\n"
-               "The output is a compact maximum-likelihood binary octree file \n"
-               "(.bt, bonsai tree)  and general octree files (.ot) with the full\n"
-               "information.\n\n";
+
 
   exit(0);
+}
+
+void outputStatistics(const OcTree* tree){
+  unsigned int numThresholded, numOther;
+  tree->calcNumThresholdedNodes(numThresholded, numOther);
+  size_t memUsage = tree->memoryUsage();
+  unsigned long long memFullGrid = tree->memoryFullGrid();
+  size_t numLeafNodes = tree->getNumLeafNodes();
+
+  cout << "Tree size: " << tree->size() <<" nodes (" << numLeafNodes<< " leafs). " <<numThresholded <<" nodes thresholded, "<< numOther << " other\n";
+  cout << "Memory: " << memUsage << " byte (" << memUsage/(1024.*1024.) << " MB)" << endl;
+  cout << "Full grid: "<< memFullGrid << " byte (" << memFullGrid/(1024.*1024.) << " MB)" << endl;
+  double x, y, z;
+  tree->getMetricSize(x, y, z);
+  cout << "Size: " << x << " x " << y << " x " << z << " m^3\n";
+  cout << endl;
 }
 
 int main(int argc, char** argv) {
@@ -79,6 +95,14 @@ int main(int argc, char** argv) {
   bool detailedLog = false;
   unsigned char compression = 0;
 
+  // get default sensor model values:
+  OcTree emptyTree(0.1);
+  double clampingMin = emptyTree.getClampingThresMin();
+  double clampingMax = emptyTree.getClampingThresMax();
+  double probMiss = emptyTree.getProbMiss();
+  double probHit = emptyTree.getProbHit();
+
+
   timeval start; 
   timeval stop; 
 
@@ -88,6 +112,8 @@ int main(int argc, char** argv) {
       graphFilename = std::string(argv[++arg]);
     else if (!strcmp(argv[arg], "-o"))
       treeFilename = std::string(argv[++arg]);
+    else if (! strcmp(argv[arg], "-res") && argc-arg < 2)
+      printUsage(argv[0]);
     else if (! strcmp(argv[arg], "-res"))
       res = atof(argv[++arg]);
     else if (! strcmp(argv[arg], "-log"))
@@ -100,6 +126,18 @@ int main(int argc, char** argv) {
       maxrange = atof(argv[++arg]);
     else if (! strcmp(argv[arg], "-n"))
       max_scan_no = atoi(argv[++arg]);
+    else if (! strcmp(argv[arg], "-clamping") && (argc-arg < 3))
+      printUsage(argv[0]);
+    else if (! strcmp(argv[arg], "-clamping")){
+      clampingMin = atof(argv[++arg]);
+      clampingMax = atof(argv[++arg]);
+    }
+    else if (! strcmp(argv[arg], "-sensor") && (argc-arg < 3))
+      printUsage(argv[0]);
+    else if (! strcmp(argv[arg], "-sensor")){
+      probMiss = atof(argv[++arg]);
+      probHit = atof(argv[++arg]);
+    }
     else {
       printUsage(argv[0]);
     }
@@ -108,13 +146,31 @@ int main(int argc, char** argv) {
   if (graphFilename == "" || treeFilename == "")
     printUsage(argv[0]);
 
+  // verify input:
+  if (res <= 0.0){
+    OCTOMAP_ERROR("Resolution must be positive");
+    exit(1);
+  }
+
+  if (clampingMin >= clampingMax || clampingMin < 0.0 || clampingMax > 1.0){
+    OCTOMAP_ERROR("Error in clamping values:  0.0 <= [%f] < [%f] <= 1.0\n", clampingMin, clampingMax);
+    exit(1);
+  }
+
+  if (probMiss >= probHit || probMiss < 0.0 || probHit > 1.0){
+    OCTOMAP_ERROR("Error in sensor model (hit/miss prob.):  0.0 <= [%f] < [%f] <= 1.0\n", probMiss, probHit);
+    exit(1);
+  }
+
 
   std::string treeFilenameOT = treeFilename + ".ot";
   std::string treeFilenameMLOT = treeFilename + "_ml.ot";
 
   cout << "\nReading Graph file\n===========================\n";
   ScanGraph* graph = new ScanGraph();
-  graph->readBinary(graphFilename);
+  if (!graph->readBinary(graphFilename))
+    exit(2);
+
   unsigned int num_points_in_graph = 0;
   if (max_scan_no > 0) {
     num_points_in_graph = graph->getNumPoints(max_scan_no-1);
@@ -134,6 +190,11 @@ int main(int argc, char** argv) {
 
   cout << "\nCreating tree\n===========================\n";
   OcTree* tree = new OcTree(res);
+
+  tree->setClampingThresMin(clampingMin);
+  tree->setClampingThresMax(clampingMax);
+  tree->setProbHit(probHit);
+  tree->setProbMiss(probMiss);
 
 
   gettimeofday(&start, NULL);  // start timer
@@ -172,50 +233,31 @@ int main(int argc, char** argv) {
   cout << "time to insert scans: " << time_to_insert << " sec" << endl;
   cout << "time to insert 100.000 points took: " << time_to_insert/ ((double) num_points_in_graph / 100000) << " sec (avg)" << endl << endl;
 
-  unsigned int numThresholded, numOther;
-  tree->calcNumThresholdedNodes(numThresholded, numOther);
 
   std::cout << "Full tree\n" << "===========================\n";
-  cout << "Tree size: " << tree->size() <<" nodes (" <<numThresholded <<" thresholded, "<< numOther << " other)\n";
-
-  unsigned int memUsage = tree->memoryUsage();
-  unsigned int memFullGrid = tree->memoryFullGrid();
-  cout << "Memory: " << memUsage << " byte (" << memUsage/(1024.*1024.) << " MB)" << endl;
-  cout << "Full grid: "<< memFullGrid << " byte (" << memFullGrid/(1024.*1024.) << " MB)" << endl;
-  double x, y, z;
-  tree->getMetricSize(x, y, z);
-  cout << "Size: " << x << " x " << y << " x " << z << " m^3\n";
-  cout << endl;
+  outputStatistics(tree);
 
   std::cout << "Pruned tree (lossless compression)\n" << "===========================\n";
   tree->prune();
-  tree->calcNumThresholdedNodes(numThresholded, numOther);
-  memUsage = tree->memoryUsage();
-
-  cout << "Tree size: " << tree->size() <<" nodes (" <<numThresholded<<" thresholded, "<< numOther << " other)\n";
-  cout << "Memory: " << memUsage << " byte (" << memUsage/(1024.*1024.) << " MB)" << endl;
-  cout << endl;
+  outputStatistics(tree);
 
   tree->write(treeFilenameOT);
 
   std::cout << "Pruned max-likelihood tree (lossy compression)\n" << "===========================\n";
   tree->toMaxLikelihood();
   tree->prune();
-  tree->calcNumThresholdedNodes(numThresholded, numOther);
-  memUsage = tree->memoryUsage();
-  cout << "Tree size: " << tree->size() <<" nodes (" <<numThresholded<<" thresholded, "<< numOther << " other)\n";
-  cout << "Memory: " << memUsage << " byte (" << memUsage/(1024.*1024.) << " MB)" << endl;
-  cout << endl;
-
+  outputStatistics(tree);
 
 
   cout << "\nWriting tree files\n===========================\n";
   tree->write(treeFilenameMLOT);
   std::cout << "Full Octree (pruned) written to "<< treeFilenameOT << std::endl;
-  std::cout << "Full Octree (max.likelihood, pruned) written to "<< treeFilenameOT << std::endl;
+  std::cout << "Full Octree (max.likelihood, pruned) written to "<< treeFilenameMLOT << std::endl;
   tree->writeBinary(treeFilename);
   std::cout << "Bonsai tree written to "<< treeFilename << std::endl;
   cout << endl;
 
   delete tree;
+
+  exit(0);
 }

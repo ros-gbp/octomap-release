@@ -1,19 +1,10 @@
-#ifndef OCTOMAP_OCCUPANCY_OCTREE_BASE_H
-#define OCTOMAP_OCCUPANCY_OCTREE_BASE_H
-
-// $Id: OccupancyOcTreeBase.h 436 2012-10-15 10:18:16Z ahornung $
-
-/**
-* OctoMap:
-* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
-* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009.
-* @see http://octomap.sourceforge.net/
-* License: New BSD License
-*/
-
 /*
- * Copyright (c) 2009-2011, K. M. Wurm, A. Hornung, University of Freiburg
+ * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
+ * http://octomap.github.com/
+ *
+ * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
  * All rights reserved.
+ * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -39,6 +30,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
+#ifndef OCTOMAP_OCCUPANCY_OCTREE_BASE_H
+#define OCTOMAP_OCCUPANCY_OCTREE_BASE_H
+
 
 #include <list>
 #include <stdlib.h>
@@ -223,11 +218,11 @@ namespace octomap {
      * cell is returned (as center coordinate). If the starting coordinate is already
      * occupied in the tree, this coordinate will be returned as a hit.
      *
-     * @param origin starting coordinate of ray
-     * @param direction A vector pointing in the direction of the raycast. Does not need to be normalized.
-     * @param end returns the center of the cell that was hit by the ray, if successful
-     * @param ignoreUnknownCells whether unknown cells are ignored. If false (default), the raycast aborts when an unkown cell is hit.
-     * @param maxRange Maximum range after which the raycast is aborted (<= 0: no limit, default)
+     * @param[in] origin starting coordinate of ray
+     * @param[in] direction A vector pointing in the direction of the raycast. Does not need to be normalized.
+     * @param[out] end returns the center of the cell that was hit by the ray, if successful
+     * @param[in] ignoreUnknownCells whether unknown cells are ignored. If false (default), the raycast aborts when an unkown cell is hit.
+     * @param[in] maxRange Maximum range after which the raycast is aborted (<= 0: no limit, default)
      * @return whether or not an occupied cell was hit
      */
     virtual bool castRay(const point3d& origin, const point3d& direction, point3d& end,

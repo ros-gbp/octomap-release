@@ -1,4 +1,4 @@
-// $Id: Pose6D.cpp 371 2012-05-02 15:52:02Z ahornung $
+// $Id$
 
 /**
 * OctoMap:

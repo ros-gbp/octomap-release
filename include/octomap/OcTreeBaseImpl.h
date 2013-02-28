@@ -1,19 +1,10 @@
-#ifndef OCTOMAP_OCTREE_BASE_IMPL_H
-#define OCTOMAP_OCTREE_BASE_IMPL_H
-
-// $Id: OcTreeBaseImpl.h 436 2012-10-15 10:18:16Z ahornung $
-
-/**
-* OctoMap:
-* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
-* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009-2011.
-* @see http://octomap.sourceforge.net/
-* License: New BSD License
-*/
-
 /*
- * Copyright (c) 2009-2011, K. M. Wurm, A. Hornung, University of Freiburg
+ * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
+ * http://octomap.github.com/
+ *
+ * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
  * All rights reserved.
+ * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -39,6 +30,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
+#ifndef OCTOMAP_OCTREE_BASE_IMPL_H
+#define OCTOMAP_OCTREE_BASE_IMPL_H
+
 
 #include <list>
 #include <limits>
@@ -174,12 +169,15 @@ namespace octomap {
     virtual inline size_t memoryUsageNode() const {return sizeof(NODE); };
 
     /// \return Memory usage of a full grid of the same size as the OcTree in bytes (for comparison)
-    size_t memoryFullGrid();
+    /// \note this can be larger than the adressable memory - size_t may not be enough to hold it!
+    unsigned long long memoryFullGrid() const;
 
     double volume();
 
     /// Size of OcTree (all known space) in meters for x, y and z dimension
     virtual void getMetricSize(double& x, double& y, double& z);
+    /// Size of OcTree (all known space) in meters for x, y and z dimension
+    virtual void getMetricSize(double& x, double& y, double& z) const;
     /// minimum value of the bounding box of all known space in x, y, z
     virtual void getMetricMin(double& x, double& y, double& z);
     /// minimum value of the bounding box of all known space in x, y, z
