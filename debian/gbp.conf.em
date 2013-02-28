@@ -1,3 +1,3 @@
 [git-buildpackage]
-upstream-branch=release/octomap/1.5.3
+upstream-branch=@(release_tag)
 upstream-tree=branch

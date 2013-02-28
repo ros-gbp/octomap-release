@@ -6,7 +6,7 @@ ENABLE_TESTING()
 # version (e.g. for packaging)
 set(OCTOMAP_MAJOR_VERSION 1)
 set(OCTOMAP_MINOR_VERSION 5)
-set(OCTOMAP_PATCH_VERSION 3)
+set(OCTOMAP_PATCH_VERSION 4)
 set(OCTOMAP_VERSION ${OCTOMAP_MAJOR_VERSION}.${OCTOMAP_MINOR_VERSION}.${OCTOMAP_PATCH_VERSION})
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
@@ -38,12 +38,6 @@ set(INSTALL_TARGETS_DEFAULT_ARGS
 
 ADD_SUBDIRECTORY( src/math )
 ADD_SUBDIRECTORY( src )
-
-# installation for external targets:
-install(PROGRAMS "extern/binvox/binvox" DESTINATION bin)
-install(PROGRAMS "extern/binvox/binvox64" DESTINATION bin)
-install(PROGRAMS "extern/binvox/viewvox" DESTINATION bin)
-install(PROGRAMS "extern/binvox/viewvox64" DESTINATION bin)
 
 file(GLOB octomap_HDRS ${PROJECT_SOURCE_DIR}/include/octomap/*.h ${PROJECT_SOURCE_DIR}/include/octomap/*.hxx)
 install(FILES ${octomap_HDRS}	DESTINATION include/octomap)
@@ -92,9 +86,6 @@ install(FILES
   "${PROJECT_BINARY_DIR}/InstallFiles/octomap-config.cmake"
   "${PROJECT_BINARY_DIR}/InstallFiles/octomap-config-version.cmake" 
   DESTINATION share/octomap/)
-
-# Install catkin package.xml
-install(FILES package.xml DESTINATION share/octomap/)
 
 # Write pkgconfig-file:
 include(InstallPkgConfigFile)
