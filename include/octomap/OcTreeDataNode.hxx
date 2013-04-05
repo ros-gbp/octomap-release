@@ -148,12 +148,11 @@ namespace octomap {
     if (!childExists(0) || getChild(0)->hasChildren())
       return false;
 
-    T childValue = getChild(0)->getValue();
-
     for (unsigned int i = 1; i<8; i++) {
-      if (!childExists(i)) return false;
-      else if (getChild(i)->hasChildren()) return false;
-      else if (! (getChild(i)->getValue() == childValue)) return false;
+      // comparison via getChild so that casts of derived classes ensure
+      // that the right == operator gets called
+      if (!childExists(i) || getChild(i)->hasChildren() || !(*(getChild(i)) == *(getChild(0))))
+        return false;
     }
     return true;
   }
