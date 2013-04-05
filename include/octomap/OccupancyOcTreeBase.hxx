@@ -69,19 +69,19 @@ namespace octomap {
 
   }
 
-  // performs transformation to data and sensor origin first
   template <class NODE>
-  void OccupancyOcTreeBase<NODE>::insertScan(const ScanNode& scan, double maxrange, bool pruning, bool lazy_eval) {
+  void OccupancyOcTreeBase<NODE>::insertPointCloud(const ScanNode& scan, double maxrange, bool lazy_eval) {
+    // performs transformation to data and sensor origin first
     Pointcloud& cloud = *(scan.scan);
     pose6d frame_origin = scan.pose;
     point3d sensor_origin = frame_origin.inv().transform(scan.pose.trans());
-    insertScan(cloud, sensor_origin, frame_origin, maxrange, pruning, lazy_eval);
+    insertPointCloud(cloud, sensor_origin, frame_origin, maxrange, lazy_eval);
   }
 
 
   template <class NODE>
-  void OccupancyOcTreeBase<NODE>::insertScan(const Pointcloud& scan, const octomap::point3d& sensor_origin, 
-                                             double maxrange, bool pruning, bool lazy_eval) {
+  void OccupancyOcTreeBase<NODE>::insertPointCloud(const Pointcloud& scan, const octomap::point3d& sensor_origin,
+                                             double maxrange, bool lazy_eval) {
 
     KeySet free_cells, occupied_cells;
     computeUpdate(scan, sensor_origin, free_cells, occupied_cells, maxrange);    
@@ -93,29 +93,21 @@ namespace octomap {
     for (KeySet::iterator it = occupied_cells.begin(); it != occupied_cells.end(); ++it) {
       updateNode(*it, true, lazy_eval);
     }
+  }
 
-    // TODO: does pruning make sense if we used "lazy_eval"?
-    if (pruning)
-      this->prune();
-  } 
-
-  // performs transformation to data and sensor origin first
   template <class NODE>
-  void OccupancyOcTreeBase<NODE>::insertScan(const Pointcloud& pc, const point3d& sensor_origin, const pose6d& frame_origin, 
-                                             double maxrange, bool pruning, bool lazy_eval) {
+  void OccupancyOcTreeBase<NODE>::insertPointCloud(const Pointcloud& pc, const point3d& sensor_origin, const pose6d& frame_origin,
+                                             double maxrange, bool lazy_eval) {
+    // performs transformation to data and sensor origin first
     Pointcloud transformed_scan (pc);
     transformed_scan.transform(frame_origin);
     point3d transformed_sensor_origin = frame_origin.transform(sensor_origin);
-    insertScan(transformed_scan, transformed_sensor_origin, maxrange, pruning, lazy_eval);
+    insertPointCloud(transformed_scan, transformed_sensor_origin, maxrange, lazy_eval);
   }
 
-  template <class NODE>
-  void OccupancyOcTreeBase<NODE>::insertScanNaive(const Pointcloud& pc, const point3d& origin, double maxrange, bool pruning, bool lazy_eval) {
-    this->insertScanRays(pc, origin, maxrange, pruning, lazy_eval);
-  }
 
   template <class NODE>
-  void OccupancyOcTreeBase<NODE>::insertScanRays(const Pointcloud& pc, const point3d& origin, double maxrange, bool pruning, bool lazy_eval) {
+  void OccupancyOcTreeBase<NODE>::insertPointCloudRays(const Pointcloud& pc, const point3d& origin, double maxrange, bool lazy_eval) {
     if (pc.size() < 1)
       return;
 
@@ -144,9 +136,6 @@ namespace octomap {
       }
 
     }
-
-    if (pruning)
-      this->prune();
   }
 
 
@@ -262,12 +251,14 @@ namespace octomap {
       return leaf;
     }
 
+    bool createdRoot = false;
     if (this->root == NULL){
       this->root = new NODE();
       this->tree_size++;
+      createdRoot = true;
     }
 
-    return updateNodeRecurs(this->root, false, key, 0, log_odds_update, lazy_eval);
+    return updateNodeRecurs(this->root, createdRoot, key, 0, log_odds_update, lazy_eval);
   }
 
   template <class NODE>
@@ -290,25 +281,11 @@ namespace octomap {
 
   template <class NODE>
   NODE* OccupancyOcTreeBase<NODE>::updateNode(const OcTreeKey& key, bool occupied, bool lazy_eval) {
-    // early abort (no change will happen).
-    // may cause an overhead in some configuration, but more often helps
-    NODE* leaf = this->search(key);
-    if (leaf
-        && ((occupied && leaf->getLogOdds() >= this->clamping_thres_max)
-        || ( !occupied && leaf->getLogOdds() <= this->clamping_thres_min)))
-    {
-      return leaf;
-    }
-
-    if (this->root == NULL){
-      this->root = new NODE();
-      this->tree_size++;
-    }
-
+    float logOdds = this->prob_miss_log;
     if (occupied)
-      return updateNodeRecurs(this->root, false, key, 0, this->prob_hit_log,  lazy_eval);
-    else
-      return updateNodeRecurs(this->root, false, key, 0, this->prob_miss_log, lazy_eval);
+      logOdds = this->prob_hit_log;
+
+    return updateNode(key, logOdds, lazy_eval);
   }
 
   template <class NODE>
@@ -339,9 +316,8 @@ namespace octomap {
     if (depth < this->tree_depth) {
       if (!node->childExists(pos)) {
         // child does not exist, but maybe it's a pruned node?
-        if ((!node->hasChildren()) && !node_just_created && (node != this->root)) {
+        if ((!node->hasChildren()) && !node_just_created ) {
           // current node does not have children AND it is not a new node 
-          // AND its not the root node // TODO: last check could be eliminated?
           // -> expand pruned node
           node->expandNode();
           this->tree_size+=8;
@@ -360,8 +336,13 @@ namespace octomap {
         return updateNodeRecurs(node->getChild(pos), created_node, key, depth+1, log_odds_update, lazy_eval);
       else {
         NODE* retval = updateNodeRecurs(node->getChild(pos), created_node, key, depth+1, log_odds_update, lazy_eval);
-        // set own probability according to prob of children
-        node->updateOccupancyChildren();
+        // prune node if possible, otherwise set own probability
+        // note: combining both did not lead to a speedup!
+        if (node->pruneNode())
+          this->tree_size -= 8;
+        else
+          node->updateOccupancyChildren();
+
         return retval;
       }
     }
@@ -371,6 +352,7 @@ namespace octomap {
       if (use_change_detection) {
         bool occBefore = this->isNodeOccupied(node);
         updateNodeLogOdds(node, log_odds_update); 
+
         if (node_just_created){  // new node
           changed_keys.insert(std::pair<OcTreeKey,bool>(key, true));
         } else if (occBefore != this->isNodeOccupied(node)) {  // occupancy changed, track it
@@ -380,8 +362,7 @@ namespace octomap {
           else if (it->second == false)
             changed_keys.erase(it);
         }
-      }
-      else {
+      } else {
         updateNodeLogOdds(node, log_odds_update); 
       }
       return node;
