@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
     if (currentScan % skip_scan_eval != 0){
       if (max_scan_no > 0) cout << "("<<currentScan << "/" << max_scan_no << ") " << flush;
       else cout << "("<<currentScan << "/" << numScans << ") " << flush;
-      tree->insertPointCloud(**scan_it, maxrange);
+      tree->insertScan(**scan_it, maxrange, false);
     } else
       cout << "(SKIP) " << flush;
 
@@ -117,8 +117,6 @@ int main(int argc, char** argv) {
 
     currentScan++;
   }
-
-  tree->expand();
 
   
   cout << "\nEvaluating scans\n===========================\n";

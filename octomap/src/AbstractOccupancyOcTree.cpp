@@ -166,8 +166,7 @@ namespace octomap {
     this->clear();
     this->setResolution(res);
     
-    if (size > 0)
-      this->readBinaryData(s);
+    this->readBinaryData(s);
     
     if (size != this->size()){
       OCTOMAP_ERROR("Tree size mismatch: # read nodes (%zu) != # expected nodes (%d)\n",this->size(), size);

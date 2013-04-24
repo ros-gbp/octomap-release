@@ -74,8 +74,6 @@ namespace octomap {
     /// initialize i-th child, allocate children array if needed
     bool createChild(unsigned int i);
 
-    /// Safe test to check of the i-th child exists,
-    /// first tests if there are any children.
     /// \return true if the i-th child exists
     bool childExists(unsigned int i) const;
 
