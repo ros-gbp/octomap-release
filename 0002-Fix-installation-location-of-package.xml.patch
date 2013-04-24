@@ -1,4 +1,4 @@
-From 28d10436dd0d3fc95cc63ade0b0f03388e95061c Mon Sep 17 00:00:00 2001
+From 9879c64a25a73d9f46d7f570ac389c3426c57fd9 Mon Sep 17 00:00:00 2001
 From: William Woodall <william@osrfoundation.org>
 Date: Wed, 24 Apr 2013 13:44:44 -0700
 Subject: [PATCH 2/2] Fix installation location of package.xml

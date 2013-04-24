@@ -1,4 +1,4 @@
-From 8e71e776abef9ec98f83f08b3576e5f3927f6650 Mon Sep 17 00:00:00 2001
+From 5add05cfd469c6fdd27387c72dc5f0f81f27c63a Mon Sep 17 00:00:00 2001
 From: Armin Hornung <hornunga@informatik.uni-freiburg.de>
 Date: Thu, 28 Feb 2013 11:08:16 +0100
 Subject: [PATCH 1/2] Added install rule for octovis package.xml
