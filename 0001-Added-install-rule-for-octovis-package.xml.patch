@@ -1,10 +1,10 @@
-From d65b3f4c7e7cd31e905101c2ce657a0c0f7db50d Mon Sep 17 00:00:00 2001
+From 8e71e776abef9ec98f83f08b3576e5f3927f6650 Mon Sep 17 00:00:00 2001
 From: Armin Hornung <hornunga@informatik.uni-freiburg.de>
 Date: Thu, 28 Feb 2013 11:08:16 +0100
-Subject: [PATCH] Added install rule for octovis package.xml
+Subject: [PATCH 1/2] Added install rule for octovis package.xml
 
 ---
- CMakeLists.txt |    3 +++
+ CMakeLists.txt | 3 +++
  1 file changed, 3 insertions(+)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
@@ -22,5 +22,5 @@ index d101e96..1113df9 100644
  ELSE()
      MESSAGE ( "Unfortunately, the viewer (octovis) can not be built because some requirements are missing.")
 -- 
-1.7.9.5
+1.7.12.4 (Apple Git-37)
 
