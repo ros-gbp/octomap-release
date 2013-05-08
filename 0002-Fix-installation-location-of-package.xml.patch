@@ -1,10 +1,10 @@
-From 9879c64a25a73d9f46d7f570ac389c3426c57fd9 Mon Sep 17 00:00:00 2001
+From 8669c2f30492a95845f8e6e782d7879de61e2e49 Mon Sep 17 00:00:00 2001
 From: William Woodall <william@osrfoundation.org>
 Date: Wed, 24 Apr 2013 13:44:44 -0700
 Subject: [PATCH 2/2] Fix installation location of package.xml
 
 ---
- CMakeLists.txt | 2 +-
+ CMakeLists.txt |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
@@ -21,5 +21,5 @@ index 1113df9..c85b505 100644
  ELSE()
      MESSAGE ( "Unfortunately, the viewer (octovis) can not be built because some requirements are missing.")
 -- 
-1.7.12.4 (Apple Git-37)
+1.7.9.5
 
