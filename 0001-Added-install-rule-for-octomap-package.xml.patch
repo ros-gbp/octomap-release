@@ -1,10 +1,10 @@
-From 08f97031c6722a8febcab60f19bc35f24c049777 Mon Sep 17 00:00:00 2001
+From e2a6e77b5fa7e212434e6aa767c3df080e70d530 Mon Sep 17 00:00:00 2001
 From: Armin Hornung <hornunga@informatik.uni-freiburg.de>
 Date: Thu, 28 Feb 2013 11:06:31 +0100
 Subject: [PATCH] Added install rule for octomap package.xml
 
 ---
- CMakeLists.txt | 3 +++
+ CMakeLists.txt |    3 +++
  1 file changed, 3 insertions(+)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
@@ -22,5 +22,5 @@ index 9cd49cd..ca9d75f 100644
  configure_file(
      "${PROJECT_SOURCE_DIR}/CMakeModules/CMakeUninstall.cmake.in"
 -- 
-1.7.12.4 (Apple Git-37)
+1.7.9.5
 
