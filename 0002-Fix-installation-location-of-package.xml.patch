@@ -1,4 +1,4 @@
-From 8669c2f30492a95845f8e6e782d7879de61e2e49 Mon Sep 17 00:00:00 2001
+From bf2c8efdc5126b15ac63ae84e1f74037ac5def57 Mon Sep 17 00:00:00 2001
 From: William Woodall <william@osrfoundation.org>
 Date: Wed, 24 Apr 2013 13:44:44 -0700
 Subject: [PATCH 2/2] Fix installation location of package.xml
@@ -8,10 +8,10 @@ Subject: [PATCH 2/2] Fix installation location of package.xml
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 1113df9..c85b505 100644
+index 95531ed..5ec107e 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -117,7 +117,7 @@ IF(BUILD_VIEWER)
+@@ -113,7 +113,7 @@ IF(BUILD_VIEWER)
    install(FILES ${octovis_HDRS} DESTINATION include/octovis)
  
    # Install catkin package.xml
