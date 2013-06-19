@@ -1,16 +1,10 @@
-// $Id$
-
 /*
- * OctoMap:
- * A probabilistic, flexible, and compact 3D mapping library for robotic systems.
- * @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009.
- * @see http://octomap.sourceforge.net/
- * License: New BSD License
- */
-
-/*
- * Copyright (c) 2009, K. M. Wurm, A. Hornung, University of Freiburg
+ * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
+ * http://octomap.github.com/
+ *
+ * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
  * All rights reserved.
+ * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -52,22 +46,27 @@
       iterator_base() : tree(NULL), maxDepth(0){}
 
       /**
-       * Constructor of the iterator.
+       * Constructor of the iterator. Initializes the iterator with the default
+       * constructor (= end() iterator) if tree is empty or NULL.
        *
        * @param tree OcTreeBaseImpl on which the iterator is used on
        * @param depth Maximum depth to traverse the tree. 0 (default): unlimited
        */
       iterator_base(OcTreeBaseImpl<NodeType,INTERFACE> const* tree, unsigned char depth=0)
-        : tree(tree), maxDepth(depth)
+        : tree((tree && tree->root) ? tree : NULL), maxDepth(depth)
       {
-        if (maxDepth == 0)
+        if (tree && maxDepth == 0)
           maxDepth = tree->getTreeDepth();
 
-        StackElement s;
-        s.node = tree->root;
-        s.depth = 0;
-        s.key[0] = s.key[1] = s.key[2] = tree->tree_max_val;
-        stack.push(s);
+        if (tree && tree->root){ // tree is not empty
+          StackElement s;
+          s.node = tree->root;
+          s.depth = 0;
+          s.key[0] = s.key[1] = s.key[2] = tree->tree_max_val;
+          stack.push(s);
+        } else{ // construct the same as "end", tree must already be NULL
+          this->maxDepth = 0;
+        }
       }
 
       /// Copy constructor of the iterator
@@ -131,7 +130,7 @@
         return tree->keyToCoord(stack.top().key[2], stack.top().depth);
       }
 
-      /// @return the side if the volume occupied by the current node
+      /// @return the side of the volume occupied by the current node
       double getSize() const {return  tree->getNodeSize(stack.top().depth); }
 
       /// return depth of the current node
@@ -166,7 +165,7 @@
         StackElement s;
         s.depth = top.depth +1;
 
-        unsigned short int center_offset_key = tree->tree_max_val >> (top.depth +1);
+        unsigned short int center_offset_key = tree->tree_max_val >> s.depth;
         // push on stack in reverse order
         for (int i=7; i>=0; --i) {
           if (top.node->childExists(i)) {
@@ -269,10 +268,13 @@
           * @param depth Maximum depth to traverse the tree. 0 (default): unlimited
           */
           leaf_iterator(OcTreeBaseImpl<NodeType, INTERFACE> const* tree, unsigned char depth=0) : iterator_base(tree, depth) {
-            // skip forward to next valid leaf node:
-            // add root another time (one will be removed) and ++
-            this->stack.push(this->stack.top());
-            operator ++();
+            // tree could be empty (= no stack)
+            if (this->stack.size() > 0){
+              // skip forward to next valid leaf node:
+              // add root another time (one will be removed) and ++
+              this->stack.push(this->stack.top());
+              operator ++();
+            }
           }
 
           leaf_iterator(const leaf_iterator& other) : iterator_base(other) {};
@@ -423,7 +425,7 @@
 
         typename iterator_base::StackElement s;
         s.depth = top.depth +1;
-        unsigned short int center_offset_key = this->tree->tree_max_val >> (top.depth +1);
+        unsigned short int center_offset_key = this->tree->tree_max_val >> s.depth;
         // push on stack in reverse order
         for (int i=7; i>=0; --i) {
           if (top.node->childExists(i)) {

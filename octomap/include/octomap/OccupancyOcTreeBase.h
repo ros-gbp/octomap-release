@@ -1,19 +1,10 @@
-#ifndef OCTOMAP_OCCUPANCY_OCTREE_BASE_H
-#define OCTOMAP_OCCUPANCY_OCTREE_BASE_H
-
-// $Id$
-
-/**
-* OctoMap:
-* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
-* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009.
-* @see http://octomap.sourceforge.net/
-* License: New BSD License
-*/
-
 /*
- * Copyright (c) 2009-2011, K. M. Wurm, A. Hornung, University of Freiburg
+ * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
+ * http://octomap.github.com/
+ *
+ * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
  * All rights reserved.
+ * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -40,8 +31,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef OCTOMAP_OCCUPANCY_OCTREE_BASE_H
+#define OCTOMAP_OCCUPANCY_OCTREE_BASE_H
+
+
 #include <list>
 #include <stdlib.h>
+#include <vector>
 
 #include "octomap_types.h"
 #include "octomap_utils.h"
@@ -80,83 +76,130 @@ namespace octomap {
     /// Copy constructor
     OccupancyOcTreeBase(const OccupancyOcTreeBase<NODE>& rhs);
 
-     /**
-     * Integrate a Pointcloud (in global reference frame)
+    /**
+    * Integrate a Pointcloud (in global reference frame), parallelized with OpenMP.
+    * Special care is taken that each voxel
+    * in the map is updated only once, and occupied nodes have a preference over free ones.
+    * This avoids holes in the floor from mutual deletion and is more efficient than the plain
+    * ray insertion in insertPointCloudRays().
+    *
+    * @note replaces insertScan()
+    *
+    * @param scan Pointcloud (measurement endpoints), in global reference frame
+    * @param sensor_origin measurement origin in global reference frame
+    * @param maxrange maximum range for how long individual beams are inserted (default -1: complete beam)
+    * @param lazy_eval whether update of inner nodes is omitted after the update (default: false).
+    *   This speeds up the insertion, but you need to call updateInnerOccupancy() when done.
+    */
+    virtual void insertPointCloud(const Pointcloud& scan, const octomap::point3d& sensor_origin,
+                   double maxrange=-1., bool lazy_eval = false);
+
+    /**
+    * Integrate a 3d scan (transform scan before tree update), parallelized with OpenMP.
+    * Special care is taken that each voxel
+    * in the map is updated only once, and occupied nodes have a preference over free ones.
+    * This avoids holes in the floor from mutual deletion and is more efficient than the plain
+    * ray insertion in insertPointCloudRays().
+    *
+    * @note replaces insertScan()
+    *
+    * @param scan Pointcloud (measurement endpoints) relative to frame origin
+    * @param sensor_origin origin of sensor relative to frame origin
+    * @param frame_origin origin of reference frame, determines transform to be applied to cloud and sensor origin
+    * @param maxrange maximum range for how long individual beams are inserted (default -1: complete beam)
+    * @param lazy_eval whether update of inner nodes is omitted after the update (default: false).
+    *   This speeds up the insertion, but you need to call updateInnerOccupancy() when done.
+    */
+    virtual void insertPointCloud(const Pointcloud& scan, const point3d& sensor_origin, const pose6d& frame_origin,
+                   double maxrange=-1., bool lazy_eval = false);
+
+    /**
+    * Insert a 3d scan (given as a ScanNode) into the tree, parallelized with OpenMP.
+    *
+    * @note replaces insertScan
+    *
+    * @param scan ScanNode contains Pointcloud data and frame/sensor origin
+    * @param maxrange maximum range for how long individual beams are inserted (default -1: complete beam)
+    * @param lazy_eval whether the tree is left 'dirty' after the update (default: false).
+    *   This speeds up the insertion by not updating inner nodes, but you need to call updateInnerOccupancy() when done.
+    */
+    virtual void insertPointCloud(const ScanNode& scan, double maxrange=-1., bool lazy_eval = false);
+
+    /// @note Deprecated, use insertPointCloud() instead. pruning is now done automatically.
+    OCTOMAP_DEPRECATED(virtual void insertScan(const Pointcloud& scan, const octomap::point3d& sensor_origin,
+                   double maxrange=-1., bool pruning=true, bool lazy_eval = false))
+    {
+      this->insertPointCloud(scan, sensor_origin, maxrange, lazy_eval);
+    }
+
+    /// @note Deprecated, use insertPointCloud() instead. pruning is now done automatically.
+    OCTOMAP_DEPRECATED(virtual void insertScan(const Pointcloud& scan, const point3d& sensor_origin,
+                    const pose6d& frame_origin, double maxrange=-1., bool pruning = true, bool lazy_eval = false))
+    {
+      this->insertPointCloud(scan, sensor_origin, frame_origin, maxrange, lazy_eval);
+    }
+
+     /// @note Deprecated, use insertPointCloud() instead. pruning is now done automatically.
+     OCTOMAP_DEPRECATED(virtual void insertScan(const ScanNode& scan, double maxrange=-1., bool pruning = true, bool lazy_eval = false)){
+       this->insertPointCloud(scan, maxrange, lazy_eval);
+     }
+
+     /// @note Deprecated, use insertPointCloudRays instead. pruning is now done automatically.
+     OCTOMAP_DEPRECATED( virtual void insertScanNaive(const Pointcloud& scan, const point3d& sensor_origin, double maxrange, bool lazy_eval = false)){
+       this->insertPointCloudRays(scan, sensor_origin, maxrange, lazy_eval);
+     }
+
+    /**
+     * Integrate a Pointcloud (in global reference frame), parallelized with OpenMP.
+     * This function simply inserts all rays of the point clouds as batch operation.
+     * Discretization effects can lead to the deletion of occupied space, it is
+     * usually recommended to use insertPointCloud() instead.
      *
      * @param scan Pointcloud (measurement endpoints), in global reference frame
      * @param sensor_origin measurement origin in global reference frame
      * @param maxrange maximum range for how long individual beams are inserted (default -1: complete beam)
-     * @param pruning whether the tree is (losslessly) pruned after insertion (default: true)
      * @param lazy_eval whether update of inner nodes is omitted after the update (default: false).
      *   This speeds up the insertion, but you need to call updateInnerOccupancy() when done.
      */
-    virtual void insertScan(const Pointcloud& scan, const octomap::point3d& sensor_origin,
-                    double maxrange=-1., bool pruning=true, bool lazy_eval = false);
+     virtual void insertPointCloudRays(const Pointcloud& scan, const point3d& sensor_origin, double maxrange = -1., bool lazy_eval = false);
 
      /**
-     * Integrate a 3d scan, transform scan before tree update
-     *
-     * @param scan Pointcloud (measurement endpoints) relative to frame origin
-     * @param sensor_origin origin of sensor relative to frame origin
-     * @param frame_origin origin of reference frame, determines transform to be applied to cloud and sensor origin
-     * @param maxrange maximum range for how long individual beams are inserted (default -1: complete beam)
-     * @param pruning whether the tree is (losslessly) pruned after insertion (default: true)
-     * @param lazy_eval whether update of inner nodes is omitted after the update (default: false).
-     *   This speeds up the insertion, but you need to call updateInnerOccupancy() when done.
-     */
-    virtual void insertScan(const Pointcloud& scan, const point3d& sensor_origin, const pose6d& frame_origin,
-                    double maxrange=-1., bool pruning = true, bool lazy_eval = false);
+      * Manipulate log_odds value of a voxel directly. This only works if key is at the lowest
+      * octree level
+      *
+      * @param key OcTreeKey of the NODE that is to be updated
+      * @param log_odds_update value to be added (+) to log_odds value of node
+      * @param lazy_eval whether update of inner nodes is omitted after the update (default: false).
+      *   This speeds up the insertion, but you need to call updateInnerOccupancy() when done.
+      * @return pointer to the updated NODE
+      */
+     virtual NODE* updateNode(const OcTreeKey& key, float log_odds_update, bool lazy_eval = false);
 
-    /**
-     * Insert a 3d scan (given as a ScanNode) into the tree.
-     *
-     * @param scan ScanNode contains Pointcloud data and frame/sensor origin
-     * @param maxrange maximum range for how long individual beams are inserted (default -1: complete beam)
-     * @param pruning whether the tree is (losslessly) pruned after insertion (default: true)
-     * @param lazy_eval whether the tree is left 'dirty' after the update (default: false).
-     *   This speeds up the insertion by not updating inner nodes, but you need to call updateInnerOccupancy() when done.
-     */
-    virtual void insertScan(const ScanNode& scan, double maxrange=-1., bool pruning = true, bool lazy_eval = false);
+     /**
+      * Manipulate log_odds value of voxel directly.
+      * Looks up the OcTreeKey corresponding to the coordinate and then calls udpateNode() with it.
+      *
+      * @param value 3d coordinate of the NODE that is to be updated
+      * @param log_odds_update value to be added (+) to log_odds value of node
+      * @param lazy_eval whether update of inner nodes is omitted after the update (default: false).
+      *   This speeds up the insertion, but you need to call updateInnerOccupancy() when done.
+      * @return pointer to the updated NODE
+      */
+     virtual NODE* updateNode(const point3d& value, float log_odds_update, bool lazy_eval = false);
 
-    /// for testing only
-    virtual void insertScanNaive(const Pointcloud& pc, const point3d& origin, double maxrange, bool pruning = true, bool lazy_eval = false);
-
-    /**
-     * Manipulate log_odds value of voxel directly
-     *
-     * @param key OcTreeKey of the NODE that is to be updated
-     * @param log_odds_update value to be added (+) to log_odds value of node
-     * @param lazy_eval whether update of inner nodes is omitted after the update (default: false).
-     *   This speeds up the insertion, but you need to call updateInnerOccupancy() when done.
-     * @return pointer to the updated NODE
-     */
-    virtual NODE* updateNode(const OcTreeKey& key, float log_odds_update, bool lazy_eval = false);
-
-    /**
-     * Manipulate log_odds value of voxel directly.
-     * Looks up the OcTreeKey corresponding to the coordinate and then calls udpateNode() with it.
-     *
-     * @param value 3d coordinate of the NODE that is to be updated
-     * @param log_odds_update value to be added (+) to log_odds value of node
-     * @param lazy_eval whether update of inner nodes is omitted after the update (default: false).
-     *   This speeds up the insertion, but you need to call updateInnerOccupancy() when done.
-     * @return pointer to the updated NODE
-     */
-    virtual NODE* updateNode(const point3d& value, float log_odds_update, bool lazy_eval = false);
-
-    /**
-     * Manipulate log_odds value of voxel directly.
-     * Looks up the OcTreeKey corresponding to the coordinate and then calls udpateNode() with it.
-     *
-     * @param x
-     * @param y
-     * @param z
-     * @param log_odds_update value to be added (+) to log_odds value of node
-     * @param lazy_eval whether update of inner nodes is omitted after the update (default: false).
-     *   This speeds up the insertion, but you need to call updateInnerOccupancy() when done.
-     * @return pointer to the updated NODE
-     */
-    virtual NODE* updateNode(double x, double y, double z, float log_odds_update, bool lazy_eval = false);
+     /**
+      * Manipulate log_odds value of voxel directly.
+      * Looks up the OcTreeKey corresponding to the coordinate and then calls udpateNode() with it.
+      *
+      * @param x
+      * @param y
+      * @param z
+      * @param log_odds_update value to be added (+) to log_odds value of node
+      * @param lazy_eval whether update of inner nodes is omitted after the update (default: false).
+      *   This speeds up the insertion, but you need to call updateInnerOccupancy() when done.
+      * @return pointer to the updated NODE
+      */
+     virtual NODE* updateNode(double x, double y, double z, float log_odds_update, bool lazy_eval = false);
 
     /**
      * Integrate occupancy measurement.
@@ -206,6 +249,8 @@ namespace octomap {
     /**
      * Insert one ray between origin and end into the tree.
      * integrateMissOnRay() is called for the ray, the end point is updated as occupied.
+     * It is usually more efficient to insert complete pointcloudsm with insertPointCloud() or
+     * insertPointCloudRays().
      *
      * @param origin origin of sensor in global coordinates
      * @param end endpoint of measurement in global coordinates
@@ -217,7 +262,8 @@ namespace octomap {
     virtual bool insertRay(const point3d& origin, const point3d& end, double maxrange=-1.0, bool lazy_eval = false);
     
     /**
-     * Performs raycasting in 3d, similar to computeRay().
+     * Performs raycasting in 3d, similar to computeRay(). Can be called in parallel e.g. with OpenMP
+     * for a speedup.
      *
      * A ray is cast from origin with a given direction, the first occupied
      * cell is returned (as center coordinate). If the starting coordinate is already
@@ -226,81 +272,26 @@ namespace octomap {
      * @param[in] origin starting coordinate of ray
      * @param[in] direction A vector pointing in the direction of the raycast. Does not need to be normalized.
      * @param[out] end returns the center of the cell that was hit by the ray, if successful
-     * @param[in] ignoreUnknownCells whether unknown cells are ignored. If false (default), the raycast aborts when an unkown cell is hit.
+     * @param[in] ignoreUnknownCells whether unknown cells are ignored. If false (default), the raycast aborts when an unknown cell is hit.
      * @param[in] maxRange Maximum range after which the raycast is aborted (<= 0: no limit, default)
      * @return whether or not an occupied cell was hit
      */
     virtual bool castRay(const point3d& origin, const point3d& direction, point3d& end,
                  bool ignoreUnknownCells=false, double maxRange=-1.0) const;
-   
-    /**
-     * Convenience function to return all occupied nodes in the OcTree.
-     * @note Deprecated, will be removed in the future.
-     * Direcly access the nodes with iterators instead!
-     *
-     * @param node_centers list of occpupied nodes (as point3d)
-     * @param max_depth Depth limit of query. 0 (default): no depth limit
-     */
-    DEPRECATED( void getOccupied(point3d_list& node_centers, unsigned int max_depth = 0) const);
-    
-    /**
-     * Convenience function to return all occupied nodes in the OcTree.
-     * @note Deprecated, will be removed in the future.
-     * Direcly access the nodes with iterators instead!     *
-     *
-     * @param occupied_volumes list of occpupied nodes (as point3d and size of the volume)
-     * @param max_depth Depth limit of query. 0 (default): no depth limit
-     */
-    DEPRECATED(void getOccupied(std::list<OcTreeVolume>& occupied_volumes, unsigned int max_depth = 0) const);
 
-    /**
-     * Traverses the tree and collects all OcTreeVolumes regarded as occupied.
-     * Inner nodes with both occupied and free children are regarded as occupied. 
-     * This should be for internal use only, use getOccupied(occupied_volumes) instead.
-     * @note Deprecated, will be removed in the future.
-     * Direcly access the nodes with iterators instead!     *
-     *
-     * @param binary_nodes list of binary OcTreeVolumes which are occupied
-     * @param delta_nodes list of delta OcTreeVolumes which are occupied
-     * @param max_depth Depth limit of query. 0 (default): no depth limit
-     */
-    DEPRECATED(void getOccupied(std::list<OcTreeVolume>& binary_nodes, std::list<OcTreeVolume>& delta_nodes,
-                     unsigned int max_depth = 0) const);
-
-
-    /**
-     * returns occupied leafs within a bounding box defined by min and max.
-     * @note Deprecated, will be removed in the future.
-     * Direcly access the nodes with iterators instead!
-     */
-    DEPRECATED(void getOccupiedLeafsBBX(point3d_list& node_centers, point3d min, point3d max) const);
-
-    /**
-     * Convenience function to return all free nodes in the OcTree.
-     * @note Deprecated, will be removed in the future.
-     * Direcly access the nodes with iterators instead!
-     *
-     * @param free_volumes list of free nodes (as point3d and size of the volume)
-     * @param max_depth Depth limit of query. 0 (default): no depth limit
-     */
-    DEPRECATED(void getFreespace(std::list<OcTreeVolume>& free_volumes, unsigned int max_depth = 0) const);
-
-    /**
-     * Traverses the tree and collects all OcTreeVolumes regarded as free.
-     * Inner nodes with both occupied and free children are regarded as occupied.
-     * @note Deprecated, will be removed in the future.
-     * Direcly access the nodes with iterators instead!
-     *
-     * @param binary_nodes list of binary OcTreeVolumes which are free
-     * @param delta_nodes list of delta OcTreeVolumes which are free
-     * @param max_depth Depth limit of query. 0 (default): no depth limit
-     */
-    DEPRECATED(void getFreespace(std::list<OcTreeVolume>& binary_nodes, std::list<OcTreeVolume>& delta_nodes,
-                      unsigned int max_depth = 0) const);
-
-
-
-    //-- set BBX limit (limits tree updates to this bounding box  
+		/**
+		 * Performs a step of the marching cubes surface reconstruction algorithm
+		 * to retreive the normal of the triangles that fall in the cube
+		 * formed by the voxels located at the vertex of a given voxel.
+		 *
+		 * @param[in] voxel for which retreive the normals
+		 * @param[out] triangles normals
+		 * @param[in] unknownStatus consider unknown cells as free (false) or occupied (default, true).
+		 * @return True if the input voxel is known in the occupancy grid, and false if it is unknown.
+		 */
+		bool getNormals(const point3d& point, std::vector<point3d>& normals, bool unknownStatus=true) const;
+	
+    //-- set BBX limit (limits tree updates to this bounding box)
 
     ///  use or ignore BBX limit (default: ignore)
     void useBBXLimit(bool enable) { use_bbx_limit = enable; }
@@ -338,7 +329,7 @@ namespace octomap {
 
 
     /**
-     * Helper for insertScan. Computes all octree nodes affected by the point cloud
+     * Helper for insertPointCloud(). Computes all octree nodes affected by the point cloud
      * integration at once. Here, occupied nodes have a preference over free
      * ones.
      *
@@ -356,7 +347,7 @@ namespace octomap {
     // -- I/O  -----------------------------------------
 
     /**
-     * Reads only the data (=tree structure) from the input stream.
+     * Reads only the data (=complete tree structure) from the input stream.
      * The tree needs to be constructed with the proper header information
      * beforehand, see readBinary().
      */
@@ -368,9 +359,6 @@ namespace octomap {
      *
      * This will set the log_odds_occupancy value of
      * all leaves to either free or occupied.
-     *
-     * @param s
-     * @return
      */
     std::istream& readBinaryNode(std::istream &s, NODE* node) const;
 
@@ -393,8 +381,6 @@ namespace octomap {
      */
     std::ostream& writeBinaryData(std::ostream &s) const;
 
-
-    void calcNumThresholdedNodes(unsigned int& num_thresholded, unsigned int& num_other) const;
 
     /**
      * Updates the occupancy of all inner nodes to reflect their children's occupancy.
@@ -434,16 +420,9 @@ namespace octomap {
                            unsigned int depth, const float& log_odds_update, bool lazy_eval = false);
     
     void updateInnerOccupancyRecurs(NODE* node, unsigned int depth);
-
-    void getOccupiedLeafsBBXRecurs( point3d_list& node_centers, unsigned int max_depth, NODE* node, 
-                                    unsigned int depth, const OcTreeKey& parent_key, 
-                                    const OcTreeKey& min, const OcTreeKey& max) const;
     
     void toMaxLikelihoodRecurs(NODE* node, unsigned int depth, unsigned int max_depth);
 
-    void calcNumThresholdedNodesRecurs (NODE* node,
-                                        unsigned int& num_thresholded,
-                                        unsigned int& num_other) const;
 
   protected:
     bool use_bbx_limit;  ///< use bounding box for queries (needs to be set)?
