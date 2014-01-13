@@ -28,7 +28,7 @@ tracks:
     - git-bloom-generate -y rosdebian --prefix release/:{ros_distro} :{ros_distro}
       -i :{release_inc}
     devel_branch: devel
-    last_version: 1.6.2
+    last_version: 1.6.3
     name: octomap
     patches: ' '
     release_inc: '0'
