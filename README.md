@@ -1,3 +1,24 @@
+## octomap - 1.6.3-0
+
+User `hornunga@colorrado` released the packages in the `octomap` repository by running `/usr/bin/bloom-release --track hydro --rosdistro hydro octomap` on `Mon, 13 Jan 2014 13:13:08 -0000`
+
+These packages were released:
+- `octomap`
+- `octovis`
+
+Version of package(s) in repository `octomap`:
+- rosdistro version: `1.6.2-0`
+- old version: `1.6.2-0`
+- new version: `1.6.3-0`
+
+Versions of tools used:
+- bloom version: `0.4.4`
+- catkin_pkg version: `0.1.24`
+- rosdep version: `0.10.23`
+- rosdistro version: `0.2.17`
+- vcstools version: `0.1.32`
+
+
 ## octomap - 1.6.2-0
 
 User `hornunga@colorrado` released the packages in the `octomap` repository by running `/usr/bin/bloom-release octomap --track hydro --rosdistro hydro` on `Tue, 26 Nov 2013 13:13:43 -0000`
