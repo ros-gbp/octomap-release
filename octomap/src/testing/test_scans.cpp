@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
   }  
 
   // insert in global coordinates:
-  tree.insertPointCloud(cloud, origin);
+  tree.insertScan(cloud, origin);
 
   cout << "done." << endl;
   cout << "writing to spherical_scan.bt..." << endl;

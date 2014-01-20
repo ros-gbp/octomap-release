@@ -1,8 +1,8 @@
 /****************************************************************************
 
- Copyright (C) 2002-2013 Gilles Debunne. All rights reserved.
+ Copyright (C) 2002-2011 Gilles Debunne. All rights reserved.
 
- This file is part of the QGLViewer library version 2.4.0.
+ This file is part of the QGLViewer library version 2.3.17.
 
  http://www.libqglviewer.com - contact@libqglviewer.com
 
@@ -20,9 +20,9 @@
 
 *****************************************************************************/
 
-#include "config.h"
 
-#if QT_VERSION >= 0x040000
+#if QT_VERSION > 0x040000
+# include <QGlobal>
 # include <QDomElement>
 # include <QString>
 # include <QStringList>

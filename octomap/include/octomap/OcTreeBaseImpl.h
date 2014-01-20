@@ -1,10 +1,19 @@
+#ifndef OCTOMAP_OCTREE_BASE_IMPL_H
+#define OCTOMAP_OCTREE_BASE_IMPL_H
+
+// $Id$
+
+/**
+* OctoMap:
+* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
+* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009-2011.
+* @see http://octomap.sourceforge.net/
+* License: New BSD License
+*/
+
 /*
- * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
- * http://octomap.github.com/
- *
- * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
+ * Copyright (c) 2009-2011, K. M. Wurm, A. Hornung, University of Freiburg
  * All rights reserved.
- * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -30,10 +39,6 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-#ifndef OCTOMAP_OCTREE_BASE_IMPL_H
-#define OCTOMAP_OCTREE_BASE_IMPL_H
-
 
 #include <list>
 #include <limits>
@@ -82,20 +87,8 @@ namespace octomap {
     OcTreeBaseImpl(double resolution);
     virtual ~OcTreeBaseImpl();
 
-    /// Deep copy constructor
     OcTreeBaseImpl(const OcTreeBaseImpl<NODE,INTERFACE>& rhs);
 
-
-    /**
-     * Swap contents of two octrees, i.e., only the underlying
-     * pointer / tree structure. You have to ensure yourself that the
-     * metadata (resolution etc) matches. No memory is cleared
-     * in this function
-     */
-    void swapContent(OcTreeBaseImpl<NODE,INTERFACE>& rhs);
-
-    /// Comparison between two octrees, all meta data, all
-    /// nodes, and the structure must be identical
     bool operator== (const OcTreeBaseImpl<NODE,INTERFACE>& rhs) const;
 
     std::string getTreeType() const {return "OcTreeBaseImpl";}
@@ -112,27 +105,24 @@ namespace octomap {
     /**
      * \return Pointer to the root node of the tree. This pointer
      * should not be modified or deleted externally, the OcTree
-     * manages its memory itself. In an empty tree, root is NULL.
+     * manages its memory itself.
      */
     inline NODE* getRoot() const { return root; }
 
     /** 
-     *  Search node at specified depth given a 3d point (depth=0: search full tree depth).
-     *  You need to check if the returned node is NULL, since it can be in unknown space.
+     *  Search node at specified depth given a 3d point (depth=0: search full tree depth)
      *  @return pointer to node if found, NULL otherwise
      */
     NODE* search(double x, double y, double z, unsigned int depth = 0) const;
 
     /**
      *  Search node at specified depth given a 3d point (depth=0: search full tree depth)
-     *  You need to check if the returned node is NULL, since it can be in unknown space.
      *  @return pointer to node if found, NULL otherwise
      */
     NODE* search(const point3d& value, unsigned int depth = 0) const;
 
     /**
      *  Search a node at specified depth given an addressing key (depth=0: search full tree depth)
-     *  You need to check if the returned node is NULL, since it can be in unknown space.
      *  @return pointer to node if found, NULL otherwise
      */
     NODE* search(const OcTreeKey& key, unsigned int depth = 0) const;
@@ -158,15 +148,11 @@ namespace octomap {
      */
     bool deleteNode(const OcTreeKey& key, unsigned int depth = 0);
 
-    /// Deletes the complete tree structure
+    /// Deletes the complete tree structure (only the root node will remain)
     void clear();
 
-    /**
-     * Lossless compression of the octree: A node will replace all of its eight
-     * children if they have identical values. You usually don't have to call
-     * prune() after a regular occupancy update, updateNode() incrementally
-     * prunes all affected nodes.
-     */
+    /// Lossless compression of OcTree: merge children to parent when there are
+    /// eight children with identical values
     virtual void prune();
 
     /// Expands all pruned nodes (reverse of prune())
@@ -181,7 +167,7 @@ namespace octomap {
     /// \return Memory usage of the complete octree in bytes (may vary between architectures)
     virtual size_t memoryUsage() const;
 
-    /// \return Memory usage of a single octree node
+    /// \return Memory usage of the a single octree node
     virtual inline size_t memoryUsageNode() const {return sizeof(NODE); };
 
     /// \return Memory usage of a full grid of the same size as the OcTree in bytes (for comparison)
@@ -438,13 +424,70 @@ namespace octomap {
       return point3d(float(keyToCoord(key[0], depth)), float(keyToCoord(key[1], depth)), float(keyToCoord(key[2], depth)));
     }
 
+    /// @deprecated, replaced with coordToKeyChecked()
+    DEPRECATED( bool genKeyValue(double coordinate, unsigned short int& keyval) const) {
+      return coordToKeyChecked(coordinate, keyval);
+    }
+
+    /// @deprecated, replaced with coordToKeyChecked()
+    DEPRECATED( bool genKey(const point3d& point, OcTreeKey& key) const ) {
+      return coordToKeyChecked(point, key);
+    }
+
+    /// @deprecated, replaced by adjustKeyAtDepth() or coordToKey() with depth parameter
+    DEPRECATED( bool genKeyValueAtDepth(const unsigned short int keyval, unsigned int depth, unsigned short int &out_keyval) const );
+
+    /// @deprecated, replaced by adjustKeyAtDepth() or coordToKey() with depth parameter
+    DEPRECATED( bool genKeyAtDepth(const OcTreeKey& key, unsigned int depth, OcTreeKey& out_key) const );
+
+    /// @deprecated, replaced by keyToCoord()
+    /// Will always return true, there is no more boundary check here
+    DEPRECATED( bool genCoordFromKey(const unsigned short int& key, unsigned depth, float& coord) const ){
+      coord = float(keyToCoord(key, depth));
+      return true;
+    }
+
+    /// @deprecated, replaced by keyToCoord()
+    /// Will always return true, there is no more boundary check here
+    DEPRECATED( inline bool genCoordFromKey(const unsigned short int& key, float& coord, unsigned depth) const) {
+      coord = float(keyToCoord(key, depth));
+      return true;
+    }
+
+    /// @deprecated, replaced by keyToCoord()
+    /// Will always return true, there is no more boundary check here
+    DEPRECATED( inline bool genCoordFromKey(const unsigned short int& key, float& coord) const) {
+      coord = float(keyToCoord(key));
+      return true;
+    }
+
+    /// @deprecated, replaced by keyToCoord()
+    DEPRECATED( double genCoordFromKey(const unsigned short int& key, unsigned depth) const) {
+      return keyToCoord(key, depth);
+    }
+
+    /// @deprecated, replaced by keyToCoord()
+    DEPRECATED( inline double genCoordFromKey(const unsigned short int& key) const) {
+      return keyToCoord(key);
+    }
+
+     /// @deprecated, replaced by keyToCoord().
+     /// Will always return true, there is no more boundary check here
+    DEPRECATED( inline bool genCoords(const OcTreeKey& key, unsigned int depth, point3d& point) const){
+      point = keyToCoord(key, depth);
+      return true;
+    }
+
+    /// generate child index (between 0 and 7) from key at given tree depth
+    /// DEPRECATED
+    DEPRECATED( inline void genPos(const OcTreeKey& key, int depth, unsigned int& pos) const) {
+      pos = computeChildIdx(key, depth);
+    }
+
  protected:
     /// Constructor to enable derived classes to change tree constants.
     /// This usually requires a re-implementation of some core tree-traversal functions as well!
     OcTreeBaseImpl(double resolution, unsigned int tree_depth, unsigned int tree_max_val);
-
-    /// initialize non-trivial members, helper for constructors
-    void init();
 
     /// recalculates min and max in x, y, z. Does nothing when tree size didn't change.
     void calcMinMax();
@@ -469,7 +512,7 @@ namespace octomap {
 
   protected:
 
-    NODE* root; ///< Pointer to the root NODE, NULL for empty tree
+    NODE* root;
 
     // constants of the tree
     const unsigned int tree_depth; ///< Maximum tree depth is fixed to 16 currently
@@ -488,8 +531,7 @@ namespace octomap {
     /// contains the size of a voxel at level i (0: root node). tree_depth+1 levels (incl. 0)
     std::vector<double> sizeLookupTable;
 
-    /// data structure for ray casting, array for multithreading
-    std::vector<KeyRay> keyrays;
+    KeyRay keyray;  // data structure for ray casting
 
     const leaf_iterator leaf_iterator_end;
     const leaf_bbx_iterator leaf_iterator_bbx_end;

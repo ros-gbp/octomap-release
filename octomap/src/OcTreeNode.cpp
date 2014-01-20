@@ -1,10 +1,16 @@
+// $Id$
+
+/**
+* OctoMap:
+* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
+* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009.
+* @see http://octomap.sourceforge.net/
+* License: New BSD License
+*/
+
 /*
- * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
- * http://octomap.github.com/
- *
- * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
+ * Copyright (c) 2009, K. M. Wurm, A. Hornung, University of Freiburg
  * All rights reserved.
- * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -73,9 +79,7 @@ namespace octomap {
         c++;
       }
     }
-    if (c)
-      mean /= (double) c;
-
+    if (c) mean /= (double) c;
     return log(mean/(1-mean));
   }
 
@@ -84,8 +88,7 @@ namespace octomap {
     for (unsigned int i=0; i<8; i++) {
       if (childExists(i)) {
         float l = getChild(i)->getLogOdds();
-        if (l > max)
-          max = l;
+        if (l > max) max = l;
       }
     }
     return max;

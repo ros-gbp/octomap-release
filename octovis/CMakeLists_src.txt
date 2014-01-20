@@ -68,27 +68,14 @@ QT4_WRAP_UI(viewer_UIS_H ${viewer_UIS})
 # the UI file won't be wrapped!
 include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_BINARY_DIR})
 
-
 # Library target 
 add_library(octovis-static STATIC ${viewerlib_SRCS})
 target_link_libraries(octovis-static)
 set_target_properties(octovis-static PROPERTIES OUTPUT_NAME octovis)
 
 add_library(octovis-shared SHARED ${viewerlib_SRCS})
-target_link_libraries(octovis-shared 
-  ${OPENGL_gl_LIBRARY} 
-  ${OPENGL_glu_LIBRARY} 
-  ${OCTOMAP_LIBRARIES}
-  ${QGLViewer_LIBRARIES}
-)
+target_link_libraries(octovis-shared ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} octomath octomap ${QGLViewer_LIBRARIES})
 set_target_properties(octovis-shared PROPERTIES OUTPUT_NAME octovis)
-
-# directly depend on the octomap library target when building the
-# complete distribution, so it is recompiled as needed
-if (CMAKE_PROJECT_NAME STREQUAL "octomap-distribution")
-  ADD_DEPENDENCIES(octovis-static octomap-static)
-  ADD_DEPENDENCIES(octovis-shared octomap)
-endif()
 
 
 # Now add these generated files to the ADD_EXECUTABLE step

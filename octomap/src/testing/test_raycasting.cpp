@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     }
     point_on_surface.rotate_IP (0,angle,0);
   }
-  tree.insertPointCloud(p, origin);
+  tree.insertScan(p, origin);
 
 
   cout << "Writing to sphere.bt..." << endl;
