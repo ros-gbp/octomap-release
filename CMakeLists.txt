@@ -113,7 +113,7 @@ IF(BUILD_VIEWER)
   install(FILES ${octovis_HDRS} DESTINATION include/octovis)
 
   # Install catkin package.xml
-  install(FILES package.xml DESTINATION share/octovis)
+  install(FILES package.xml DESTINATION share/octomap)
   
 ELSE()
     MESSAGE ( "Unfortunately, the viewer (octovis) can not be built because some requirements are missing.")
