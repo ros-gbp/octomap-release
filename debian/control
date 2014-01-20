@@ -1,0 +1,12 @@
+Source: ros-hydro-octovis
+Section: misc
+Priority: extra
+Maintainer: Armin Hornung <hornunga@informatik.uni-freiburg.de>
+Build-Depends: debhelper (>= 7.0.50~), cmake, libqglviewer-qt4-dev, libqt4-dev, libqt4-opengl-dev, ros-hydro-octomap
+Homepage: http://octomap.github.io
+Standards-Version: 3.9.2
+
+Package: ros-hydro-octovis
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqglviewer-qt4-2, libqt4-opengl, libqtgui4, ros-hydro-catkin, ros-hydro-octomap
+Description: octovis is visualization tool for the OctoMap library based on Qt and libQGLViewer. See http://octomap.github.io for details.
