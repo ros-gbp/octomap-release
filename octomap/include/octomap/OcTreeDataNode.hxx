@@ -1,16 +1,10 @@
-// $Id$
-
-/**
-* OctoMap:
-* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
-* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009.
-* @see http://octomap.sourceforge.net/
-* License: New BSD License
-*/
-
 /*
- * Copyright (c) 2009, K. M. Wurm, A. Hornung, University of Freiburg
+ * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
+ * http://octomap.github.com/
+ *
+ * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
  * All rights reserved.
+ * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -66,7 +60,6 @@ namespace octomap {
       }
     }
   }
-
 
 
   template <typename T>
@@ -133,9 +126,13 @@ namespace octomap {
 
   template <typename T>
   bool OcTreeDataNode<T>::hasChildren() const {
-    if (children == NULL) return false;
-    for (unsigned int i = 0; i<8; i++)
-      if (childExists(i)) return true;
+    if (children == NULL)
+      return false;
+    for (unsigned int i = 0; i<8; i++){
+      // fast check, we know children != NULL
+      if (children[i] != NULL)
+        return true;
+    }
     return false;
   }
 
@@ -151,12 +148,11 @@ namespace octomap {
     if (!childExists(0) || getChild(0)->hasChildren())
       return false;
 
-    T childValue = getChild(0)->getValue();
-
     for (unsigned int i = 1; i<8; i++) {
-      if (!childExists(i)) return false;
-      else if (getChild(i)->hasChildren()) return false;
-      else if (! (getChild(i)->getValue() == childValue)) return false;
+      // comparison via getChild so that casts of derived classes ensure
+      // that the right == operator gets called
+      if (!childExists(i) || getChild(i)->hasChildren() || !(*(getChild(i)) == *(getChild(0))))
+        return false;
     }
     return true;
   }

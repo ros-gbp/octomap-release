@@ -1,16 +1,10 @@
-// $Id: graph2tree.cpp 444 2012-11-16 16:04:12Z ahornung $
-
-/**
-* OctoMap:
-* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
-* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009.
-* @see http://octomap.sourceforge.net/
-* License: New BSD License
-*/
-
 /*
- * Copyright (c) 2012, K. M. Wurm, A. Hornung, University of Freiburg
+ * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
+ * http://octomap.github.com/
+ *
+ * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
  * All rights reserved.
+ * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -114,7 +108,7 @@ int main(int argc, char** argv) {
     if (currentScan % skip_scan_eval != 0){
       if (max_scan_no > 0) cout << "("<<currentScan << "/" << max_scan_no << ") " << flush;
       else cout << "("<<currentScan << "/" << numScans << ") " << flush;
-      tree->insertScan(**scan_it, maxrange, false);
+      tree->insertPointCloud(**scan_it, maxrange);
     } else
       cout << "(SKIP) " << flush;
 
@@ -123,6 +117,8 @@ int main(int argc, char** argv) {
 
     currentScan++;
   }
+
+  tree->expand();
 
   
   cout << "\nEvaluating scans\n===========================\n";
