@@ -1,3 +1,24 @@
+## octomap - 1.6.4-1
+
+User `isucan@isucan-glaptop0` released the packages in the `octomap` repository by running `/usr/bin/bloom-release -t indigo -r indigo octomap` on `Sun, 16 Feb 2014 17:46:36 -0000`
+
+These packages were released:
+- `octomap`
+- `octovis`
+
+Version of package(s) in repository `octomap`:
+- rosdistro version: `1.6.4-0`
+- old version: `1.6.4-0`
+- new version: `1.6.4-1`
+
+Versions of tools used:
+- bloom version: `0.4.9`
+- catkin_pkg version: `0.1.26`
+- rosdep version: `0.10.25`
+- rosdistro version: `0.3.4`
+- vcstools version: `0.1.33`
+
+
 ## octomap - 1.6.4-0
 
 User `isucan@isucan-glaptop0` released the packages in the `octomap` repository by running `/usr/bin/bloom-release -t indigo -r indigo --new-track octomap` on `Sun, 16 Feb 2014 04:45:15 -0000`
