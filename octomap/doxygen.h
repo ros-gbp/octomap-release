@@ -1,21 +1,21 @@
 
 /**
- * \namespace octomath Namespace of the math library in OctoMap
+ * \namespace octomath Namespace of the math library in Octomap
  *
  */
 
 
 /**
- * \namespace octomap Namespace the OctoMap library and visualization tools
+ * \namespace octomap Namespace the Octomap library and visualization tools
  *
  */
 
 
-/** \mainpage OctoMap
+/** \mainpage Octomap
 
   \section intro_sec Introduction
 
-  The <a href="http://octomap.github.com/">OctoMap library</a>
+  The <a href="http://octomap.github.com/">Octomap library</a>
   implements a 3D occupancy grid mapping approach. It provides data
   structures and mapping algorithms. The map is implemented using an
   \ref octomap::OcTree "Octree". It is designed to meet the following
@@ -77,21 +77,16 @@ https://github.com/OctoMap/octomap.</p>
 
 
 \section gettingstarted_sec Getting Started
- 
-
 <p>
-  Jump right in and have a look at the main class \ref octomap::OcTree OcTree and the examples in src/octomap/simple_example.cpp.
+  Jump right in and have a look at the main class octomap::OcTree and the examples in src/octomap/simple.cpp. 
   To integrate single measurements into the 3D map have a look at
-  \ref octomap::OcTree::insertRay "OcTree::insertRay(...)", to insert full 3D scans (pointclouds) please have a look at
-  \ref octomap::OcTree::insertPointCloud "OcTree::insertPointCloud(...)". Queries can be performed e.g. with \ref octomap::OcTree::search "OcTree::search(...)" or
-  \ref octomap::OcTree::castRay "OcTree::castRay(...)". The preferred way to batch-access or process nodes in an Octree is with the iterators
+  octomap::OcTree::insertRay(...), to insert full 3D scans (pointclouds) please have a look at
+  octomap::OcTree::insertScan(...). Queries can be performed e.g. with octomap::OcTree::search(...) or
+  octomap::OcTree::castRay(...). The preferred way to batch-access or process nodes in an Octree is with the iterators
   \ref leaf_iterator "leaf_iterator",  \ref tree_iterator "tree_iterator", or \ref leaf_bbx_iterator "leaf_bbx_iterator".</p>
-
-  \image html uml_overview.png
-  
   <p>The \ref octomap::OcTree "OcTree" class is derived from \ref octomap::OccupancyOcTreeBase "OccupancyOcTreeBase", with most
   functionality in the parent class. Also derive from OccupancyOcTreeBase if you you want to implement
-  your own Octree and node classes. You can have a look at the classes \ref octomap::OcTreeStamped "OcTreeStamped" and \ref octomap::OcTreeNodeStamped "OcTreeNodeStamped" as examples.
+  your own Octree and node classes. You can have a look at the classes octomap::OcTreeStamped and octomap::OcTreeNodeStamped as examples.
   </p>
 
 
@@ -101,7 +96,7 @@ https://github.com/OctoMap/octomap.</p>
 </p>
 
 <p>
-You will find an example 3D scan (please bunzip2 first) and an example OctoMap .bt file in the directory <b>share/data</b> to try. More data sets are available at http://ais.informatik.uni-freiburg.de/projects/datasets/octomap/.
+  You will find an example scan to load at <b>src/examples/scan.dat.bz2</b>  (please bunzip2 it first)
 </p>
 
 

@@ -1,10 +1,16 @@
+// $Id$
+
+/**
+* OctoMap:
+* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
+* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009.
+* @see http://octomap.sourceforge.net/
+* License: New BSD License
+*/
+
 /*
- * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
- * http://octomap.github.com/
- *
- * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
+ * Copyright (c) 2009, K. M. Wurm, A. Hornung, University of Freiburg
  * All rights reserved.
- * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -30,9 +36,6 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-#include <vector>
-#include <string>
 
 #include <octomap/octomap.h>
 #include <octomap/OcTree.h>
@@ -80,33 +83,25 @@ int main(int argc, char** argv) {
   }
 
   cout << endl;
-  cout << "performing some queries around the desired voxel:" << endl;
+  cout << "performing some queries:" << endl;
   
-  point3d query;
-  OcTreeNode* result = NULL;
+  point3d query (0., 0., 0.);
+  OcTreeNode* result = tree.search (query);
+  print_query_info(query, result);
 
-  for(float z = -0.6; z < -0.21; z += 0.1){
-    for(float y = -0.6; y < -0.21; y += 0.1){
-      for(float x = -0.6; x < -0.21; x += 0.1){
-        query = point3d(x, y, z);
-        result = tree.search(query);
-        print_query_info(query, result);
-      }
-    }
-  }
-  
-  query = point3d(-0.5, -0.4, -0.4);
-  result = tree.search(query);
-	
-  vector<point3d> normals;
-  if (tree.getNormals(query, normals)){
-  
-    cout << endl;
-    string s_norm = (normals.size() > 1) ? " normals " : " normal ";
-    cout << "MC algorithm gives " << normals.size() << s_norm << "in voxel at " << query << endl;
-    for(unsigned i = 0; i < normals.size(); ++i)
-      cout << "\t" << normals[i].x() << "; " << normals[i].y() << "; " << normals[i].z() << endl;
-  } else{
-    cout << "query point unknown (no normals)\n";
-  }
+  query = point3d(-1.,-1.,-1.);
+  result = tree.search (query);
+  print_query_info(query, result);
+
+  query = point3d(1.,1.,1.);
+  result = tree.search (query);
+  print_query_info(query, result);
+
+
+  cout << endl;
+  tree.writeBinary("simple_tree.bt");
+  cout << "wrote example file simple_tree.bt" << endl << endl;
+  cout << "now you can use octovis to visualize: octovis simple_tree.bt"  << endl;
+  cout << "Hint: hit 'F'-key in viewer to see the freespace" << endl  << endl;  
+
 }

@@ -1,10 +1,16 @@
+// $Id$
+
+/**
+ * OctoMap:
+ * A probabilistic, flexible, and compact 3D mapping library for robotic systems.
+ * @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009.
+ * @see http://octomap.sourceforge.net/
+ * License: New BSD License
+ */
+
 /*
- * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
- * http://octomap.github.com/
- *
- * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
+ * Copyright (c) 2009-2011, K. M. Wurm, A. Hornung, University of Freiburg
  * All rights reserved.
- * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -53,7 +59,7 @@ namespace octomath {
     /*!
      * \brief Default constructor
      */
-    Vector3 () { data[0] = data[1] = data[2] = 0.0; }
+    Vector3 () { data[0] = data[1] = data[2] = 0; }
 
     /*!
      * \brief Copy constructor
@@ -113,7 +119,6 @@ namespace octomath {
                      x()*other.y() - y()*other.x());
     }
 
-    /// dot product
     inline double dot (const Vector3& other) const 
     {
       return x()*other.x() + y()*other.y() + z()*other.z();
@@ -256,25 +261,21 @@ namespace octomath {
       return true;
     }
         
-    /// @return length of the vector ("L2 norm")
     inline double norm () const {
-      return sqrt(norm_sq());
+      double n = 0;
+      for (unsigned int i=0; i<3; i++) {
+        n += operator()(i) * operator()(i);
+      }
+      return sqrt(n);
     }
 
-    /// @return squared length ("L2 norm") of the vector
-    inline double norm_sq() const {
-      return (x()*x() + y()*y() + z()*z());
-    }
-
-    /// normalizes this vector, so that it has norm=1.0
     inline Vector3& normalize () {
-      double len = norm();
+      double len = norm ();
       if (len > 0)
         *this /= (float) len;
       return *this;
     }
 
-    /// @return normalized vector, this one remains unchanged
     inline Vector3 normalized () const {
       Vector3 result(*this);
       result.normalize ();

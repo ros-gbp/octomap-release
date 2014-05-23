@@ -1,10 +1,16 @@
+// $Id$
+
+/**
+* OctoMap:
+* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
+* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009.
+* @see http://octomap.sourceforge.net/
+* License: New BSD License
+*/
+
 /*
- * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
- * http://octomap.github.com/
- *
- * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
+ * Copyright (c) 2009, K. M. Wurm, A. Hornung, University of Freiburg
  * All rights reserved.
- * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -102,12 +108,7 @@ namespace octomap {
     const_iterator begin() const { return points.begin(); }
     const_iterator end() const  { return points.end(); }
     point3d back()  { return points.back(); }
-    /// Returns a copy of the ith point in point cloud.
-    /// Use operator[] for direct access to point reference.
-    point3d getPoint(unsigned int i) const;   // may return NULL
-
-    inline const point3d& operator[] (size_t i) const { return points[i]; }
-    inline point3d& operator[] (size_t i) { return points[i]; }
+    point3d getPoint(unsigned int i);   // may return NULL
 
     // I/O methods
 

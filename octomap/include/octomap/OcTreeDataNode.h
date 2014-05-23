@@ -1,10 +1,19 @@
+#ifndef OCTOMAP_OCTREE_DATA_NODE_H
+#define OCTOMAP_OCTREE_DATA_NODE_H
+
+// $Id$
+
+/**
+* OctoMap:
+* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
+* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009.
+* @see http://octomap.sourceforge.net/
+* License: New BSD License
+*/
+
 /*
- * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
- * http://octomap.github.com/
- *
- * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
+ * Copyright (c) 2009, K. M. Wurm, A. Hornung, University of Freiburg
  * All rights reserved.
- * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -30,10 +39,6 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-#ifndef OCTOMAP_OCTREE_DATA_NODE_H
-#define OCTOMAP_OCTREE_DATA_NODE_H
-
 
 #include "octomap_types.h"
 #include "assert.h"
@@ -74,8 +79,6 @@ namespace octomap {
     /// initialize i-th child, allocate children array if needed
     bool createChild(unsigned int i);
 
-    /// Safe test to check of the i-th child exists,
-    /// first tests if there are any children.
     /// \return true if the i-th child exists
     bool childExists(unsigned int i) const;
 

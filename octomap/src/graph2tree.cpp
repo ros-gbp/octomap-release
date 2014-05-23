@@ -1,10 +1,16 @@
+// $Id$
+
+/**
+* OctoMap:
+* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
+* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009.
+* @see http://octomap.sourceforge.net/
+* License: New BSD License
+*/
+
 /*
- * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
- * http://octomap.github.com/
- *
- * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
+ * Copyright (c) 2009, K. M. Wurm, A. Hornung, University of Freiburg
  * All rights reserved.
- * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -57,9 +63,8 @@ void printUsage(char* self){
             "  -m <maxrange> (optional) \n"
             "  -n <max scan no.> (optional) \n"
             "  -log (enable a detailed log file with statistics) \n"
+            "  -compress (enable lossless compression after every scan)\n"
             "  -compressML (enable maximum-likelihood compression (lossy) after every scan)\n"
-            "  -simple (simple scan insertion ray by ray instead of optimized) \n"
-            "  -discretize (approximate raycasting on discretized coordinates, speeds up insertion) \n"
             "  -clamping <p_min> <p_max> (override default sensor model clamping probabilities between 0..1)\n"
             "  -sensor <p_miss> <p_hit> (override default sensor model hit and miss probabilities between 0..1)"
   "\n";
@@ -70,24 +75,9 @@ void printUsage(char* self){
   exit(0);
 }
 
-void calcThresholdedNodes(const OcTree* tree,
-                          unsigned int& num_thresholded,
-                          unsigned int& num_other)
-{
-  num_thresholded = 0;
-  num_other = 0;
-
-  for(OcTree::tree_iterator it = tree->begin_tree(), end=tree->end_tree(); it!= end; ++it){
-    if (tree->isNodeAtThreshold(*it))
-      num_thresholded++;
-    else
-      num_other++;
-  }
-}
-
 void outputStatistics(const OcTree* tree){
   unsigned int numThresholded, numOther;
-  calcThresholdedNodes(tree, numThresholded, numOther);
+  tree->calcNumThresholdedNodes(numThresholded, numOther);
   size_t memUsage = tree->memoryUsage();
   unsigned long long memFullGrid = tree->memoryFullGrid();
   size_t numLeafNodes = tree->getNumLeafNodes();
@@ -101,7 +91,6 @@ void outputStatistics(const OcTree* tree){
   cout << endl;
 }
 
-
 int main(int argc, char** argv) {
   // default values:
   double res = 0.1;
@@ -110,9 +99,7 @@ int main(int argc, char** argv) {
   double maxrange = -1;
   int max_scan_no = -1;
   bool detailedLog = false;
-  bool simpleUpdate = false;
-  bool discretize = false;
-  unsigned char compression = 1;
+  unsigned char compression = 0;
 
   // get default sensor model values:
   OcTree emptyTree(0.1);
@@ -137,12 +124,8 @@ int main(int argc, char** argv) {
       res = atof(argv[++arg]);
     else if (! strcmp(argv[arg], "-log"))
       detailedLog = true;
-    else if (! strcmp(argv[arg], "-simple"))
-      simpleUpdate = true;
-    else if (! strcmp(argv[arg], "-discretize"))
-      discretize = true;
     else if (! strcmp(argv[arg], "-compress"))
-      OCTOMAP_WARNING("Argument -compress no longer has an effect, incremental pruning is done during each insertion.\n");
+      compression = 1;
     else if (! strcmp(argv[arg], "-compressML"))
       compression = 2;
     else if (! strcmp(argv[arg], "-m"))
@@ -203,20 +186,6 @@ int main(int argc, char** argv) {
     num_points_in_graph = graph->getNumPoints();
     cout << "\n Data points in graph: " << num_points_in_graph << endl;
   }
-
-  // transform pointclouds first, so we can directly operate on them later
-  for (ScanGraph::iterator scan_it = graph->begin(); scan_it != graph->end(); scan_it++) {
-
-    pose6d frame_origin = (*scan_it)->pose;
-    point3d sensor_origin = frame_origin.inv().transform((*scan_it)->pose.trans());
-
-    (*scan_it)->scan->transform(frame_origin);
-    point3d transformed_sensor_origin = frame_origin.transform(sensor_origin);
-    (*scan_it)->pose = pose6d(transformed_sensor_origin, octomath::Quaternion());
-
-  }
-
-
   std::ofstream logfile;
   if (detailedLog){
     logfile.open((treeFilename+".log").c_str());
@@ -224,8 +193,6 @@ int main(int argc, char** argv) {
     logfile << "# Resolution: "<< res <<"; compression: " << int(compression) << "; scan endpoints: "<< num_points_in_graph << std::endl;
     logfile << "# [scan number] [bytes octree] [bytes full 3D grid]\n";
   }
-
-
 
   cout << "\nCreating tree\n===========================\n";
   OcTree* tree = new OcTree(res);
@@ -243,11 +210,7 @@ int main(int argc, char** argv) {
     if (max_scan_no > 0) cout << "("<<currentScan << "/" << max_scan_no << ") " << flush;
     else cout << "("<<currentScan << "/" << numScans << ") " << flush;
 
-    if (simpleUpdate)
-      tree->insertPointCloudRays((*scan_it)->scan, (*scan_it)->pose.trans(), maxrange);
-    else
-      tree->insertPointCloud((*scan_it)->scan, (*scan_it)->pose.trans(), maxrange, false, discretize);
-
+    tree->insertScan(**scan_it, maxrange, (compression==1));
     if (compression == 2){
       tree->toMaxLikelihood();
       tree->prune();
@@ -277,7 +240,11 @@ int main(int argc, char** argv) {
   cout << "time to insert 100.000 points took: " << time_to_insert/ ((double) num_points_in_graph / 100000) << " sec (avg)" << endl << endl;
 
 
+  std::cout << "Full tree\n" << "===========================\n";
+  outputStatistics(tree);
+
   std::cout << "Pruned tree (lossless compression)\n" << "===========================\n";
+  tree->prune();
   outputStatistics(tree);
 
   tree->write(treeFilenameOT);
