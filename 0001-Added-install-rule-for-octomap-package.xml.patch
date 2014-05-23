@@ -1,4 +1,4 @@
-From 8181f6a3ce8a19eaf36a94883e376d6fd5f1af55 Mon Sep 17 00:00:00 2001
+From 1cd42e3f4ecf7e15b4559f838a691b1a799bb205 Mon Sep 17 00:00:00 2001
 From: Armin Hornung <hornunga@informatik.uni-freiburg.de>
 Date: Thu, 28 Feb 2013 11:06:31 +0100
 Subject: [PATCH] Added install rule for octomap package.xml
@@ -8,7 +8,7 @@ Subject: [PATCH] Added install rule for octomap package.xml
  1 file changed, 3 insertions(+)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index e672a4e..791f99c 100644
+index 1ec7def..32bd888 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -44,6 +44,9 @@ install(FILES ${octomap_HDRS}	DESTINATION include/octomap)
