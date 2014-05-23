@@ -51,7 +51,7 @@ tracks:
     devel_branch: devel
     last_version: 1.6.4
     name: octomap
-    patches: indigo_patch
+    patches: ' '
     release_inc: '1'
     release_repo_url: null
     release_tag: v:{version}
