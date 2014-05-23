@@ -1,19 +1,10 @@
-#ifndef OCTOMAP_ABSTRACT_OCCUPANCY_OCTREE_H
-#define OCTOMAP_ABSTRACT_OCCUPANCY_OCTREE_H
-
-// $Id$
-
-/**
-* OctoMap:
-* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
-* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009-2011.
-* @see http://octomap.sourceforge.net/
-* License: New BSD License
-*/
-
 /*
- * Copyright (c) 2009-2011, K. M. Wurm, A. Hornung, University of Freiburg
+ * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
+ * http://octomap.github.com/
+ *
+ * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
  * All rights reserved.
+ * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -39,6 +30,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
+#ifndef OCTOMAP_ABSTRACT_OCCUPANCY_OCTREE_H
+#define OCTOMAP_ABSTRACT_OCCUPANCY_OCTREE_H
 
 #include "AbstractOcTree.h"
 #include "octomap_utils.h"
@@ -192,9 +186,9 @@ namespace octomap {
 
     /// sets the threshold for occupancy (sensor model)
     void setOccupancyThres(double prob){occ_prob_thres_log = logodds(prob); }
-    /// sets the probablility for a "hit" (will be converted to logodds) - sensor model
+    /// sets the probability for a "hit" (will be converted to logodds) - sensor model
     void setProbHit(double prob){prob_hit_log = logodds(prob); assert(prob_hit_log >= 0.0);}
-    /// sets the probablility for a "miss" (will be converted to logodds) - sensor model
+    /// sets the probability for a "miss" (will be converted to logodds) - sensor model
     void setProbMiss(double prob){prob_miss_log = logodds(prob); assert(prob_miss_log <= 0.0);}
     /// sets the minimum threshold for occupancy clamping (sensor model)
     void setClampingThresMin(double thresProb){clamping_thres_min = logodds(thresProb); }
@@ -206,13 +200,13 @@ namespace octomap {
     /// @return threshold (logodds) for occupancy - sensor model
     float getOccupancyThresLog() const {return occ_prob_thres_log; }
 
-    /// @return probablility for a "hit" in the sensor model (probability)
+    /// @return probability for a "hit" in the sensor model (probability)
     double getProbHit() const {return probability(prob_hit_log); }
-    /// @return probablility for a "hit" in the sensor model (logodds)
+    /// @return probability for a "hit" in the sensor model (logodds)
     float getProbHitLog() const {return prob_hit_log; }
-    /// @return probablility for a "miss"  in the sensor model (probability)
+    /// @return probability for a "miss"  in the sensor model (probability)
     double getProbMiss() const {return probability(prob_miss_log); }
-    /// @return probablility for a "miss"  in the sensor model (logodds)
+    /// @return probability for a "miss"  in the sensor model (logodds)
     float getProbMissLog() const {return prob_miss_log; }
 
     /// @return minimum threshold for occupancy clamping in the sensor model (probability)

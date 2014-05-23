@@ -1,19 +1,10 @@
-#ifndef OCTOMAP_OCTREE_KEY_H
-#define OCTOMAP_OCTREE_KEY_H
-
-// $Id$
-
-/**
-* OctoMap:
-* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
-* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2010.
-* @see http://octomap.sourceforge.net/
-* License: New BSD License
-*/
-
 /*
- * Copyright (c) 2010, K. M. Wurm, A. Hornung, University of Freiburg
+ * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
+ * http://octomap.github.com/
+ *
+ * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
  * All rights reserved.
+ * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -40,13 +31,31 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef OCTOMAP_OCTREE_KEY_H
+#define OCTOMAP_OCTREE_KEY_H
+
+/* According to c++ standard including this header has no practical effect
+ * but it can be used to determine the c++ standard library implementation.
+ */
+#include <ciso646>
+
 #include <assert.h>
-#ifdef __GNUC__
+
+/* Libc++ does not implement the TR1 namespace, all c++11 related functionality
+ * is instead implemented in the std namespace.
+ */
+#if defined(__GNUC__) && ! defined(_LIBCPP_VERSION)
   #include <tr1/unordered_set>
   #include <tr1/unordered_map>
+  namespace octomap {
+    namespace unordered_ns = std::tr1;
+  };
 #else
   #include <unordered_set>
   #include <unordered_map>
+  namespace octomap {
+    namespace unordered_ns = std;
+  }
 #endif
 
 namespace octomap {
@@ -100,14 +109,14 @@ namespace octomap {
    * @note you need to use boost::unordered_set instead if your compiler does not
    * yet support tr1!
    */
-  typedef std::tr1::unordered_set<OcTreeKey, OcTreeKey::KeyHash> KeySet;
+  typedef unordered_ns::unordered_set<OcTreeKey, OcTreeKey::KeyHash> KeySet;
 
   /**
    * Data structrure to efficiently track changed nodes as a combination of
    * OcTreeKeys and a bool flag (to denote newly created nodes)
    *
    */
-  typedef std::tr1::unordered_map<OcTreeKey, bool, OcTreeKey::KeyHash> KeyBoolMap;
+  typedef unordered_ns::unordered_map<OcTreeKey, bool, OcTreeKey::KeyHash> KeyBoolMap;
 
 
   class KeyRay {
@@ -158,7 +167,7 @@ namespace octomap {
    */
   inline void computeChildKey (const unsigned int& pos, const unsigned short int& center_offset_key,
                                           const OcTreeKey& parent_key, OcTreeKey& child_key) {
-    
+    // x-axis
     if (pos & 1) child_key[0] = parent_key[0] + center_offset_key;
     else         child_key[0] = parent_key[0] - center_offset_key - (center_offset_key ? 0 : 1);
     // y-axis
@@ -186,12 +195,16 @@ namespace octomap {
    * @return key corresponding to the input key at the given level
    */
   inline OcTreeKey computeIndexKey(unsigned short int level, const OcTreeKey& key) {
-    unsigned short int mask = 65535 << level;
-    OcTreeKey result = key;
-    result[0] &= mask;
-    result[1] &= mask;
-    result[2] &= mask;
-    return result;
+    if (level == 0)
+      return key;
+    else {
+      unsigned short int mask = 65535 << level;
+      OcTreeKey result = key;
+      result[0] &= mask;
+      result[1] &= mask;
+      result[2] &= mask;
+      return result;
+    }
   }
 
 } // namespace

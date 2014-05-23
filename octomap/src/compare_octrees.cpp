@@ -1,16 +1,10 @@
-// $Id: $
-
-/**
-* OctoMap:
-* A probabilistic, flexible, and compact 3D mapping library for robotic systems.
-* @author K. M. Wurm, A. Hornung, University of Freiburg, Copyright (C) 2009.
-* @see http://octomap.sourceforge.net/
-* License: New BSD License
-*/
-
 /*
- * Copyright (c) 2009, K. M. Wurm, A. Hornung, University of Freiburg
+ * OctoMap - An Efficient Probabilistic 3D Mapping Framework Based on Octrees
+ * http://octomap.github.com/
+ *
+ * Copyright (c) 2009-2013, K.M. Wurm and A. Hornung, University of Freiburg
  * All rights reserved.
+ * License: New BSD
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -45,8 +39,13 @@
 #include <list>
 #include <cmath>
 
-using std::cout;
-using std::endl;
+#ifdef _MSC_VER // fix missing isnan for VC++
+#define isnan(x) _isnan(x)  
+#endif
+
+// on MacOS, isnan is in std (also C++11)
+using namespace std;
+
 using namespace octomap;
 
 void printUsage(char* self){
@@ -133,7 +132,7 @@ int main(int argc, char** argv) {
       else
         kld +=log(p1/p2)*p1 + log((1-p1)/(1-p2))*(1-p1);
 
-      if (std::isnan(kld)){
+      if (isnan(kld)){
         OCTOMAP_ERROR("KLD is nan! KLD(%f,%f)=%f; sum = %f", p1, p2, kld, kld_sum);
         exit(-1);
       }
