@@ -1,3 +1,25 @@
+## octomap (indigo) - 1.6.6-0
+
+The packages in the `octomap` repository were released into the `indigo` distro by running `/usr/bin/bloom-release octomap --track indigo --rosdistro indigo` on `Tue, 27 May 2014 08:36:30 -0000`
+
+These packages were released:
+- `dynamic_edt_3d`
+- `octomap`
+- `octovis`
+
+Version of package(s) in repository `octomap`:
+- rosdistro version: `1.6.5-0`
+- old version: `1.6.5-0`
+- new version: `1.6.6-0`
+
+Versions of tools used:
+- bloom version: `0.5.9`
+- catkin_pkg version: `0.2.2`
+- rosdep version: `0.10.25`
+- rosdistro version: `0.3.4`
+- vcstools version: `0.1.32`
+
+
 ## octomap (hydro) - 1.6.6-0
 
 The packages in the `octomap` repository were released into the `hydro` distro by running `/usr/bin/bloom-release octomap --track hydro --rosdistro hydro` on `Tue, 27 May 2014 08:33:43 -0000`
