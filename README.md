@@ -1,3 +1,27 @@
+## octomap (jade) - 1.6.8-0
+
+The packages in the `octomap` repository were released into the `jade` distro by running `/usr/bin/bloom-release octomap --track jade --rosdistro jade --new-track` on `Wed, 22 Apr 2015 19:02:09 -0000`
+
+These packages were released:
+- `dynamic_edt_3d`
+- `octomap`
+- `octovis`
+
+Version of package(s) in repository `octomap`:
+- upstream repository: https://github.com/OctoMap/octomap.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `1.6.8-0`
+
+Versions of tools used:
+- bloom version: `0.5.19`
+- catkin_pkg version: `0.2.8`
+- rosdep version: `0.11.2`
+- rosdistro version: `0.4.2`
+- vcstools version: `0.1.36`
+
+
 ## octomap (hydro) - 1.6.8-0
 
 The packages in the `octomap` repository were released into the `hydro` distro by running `/usr/bin/bloom-release octomap --track hydro --rosdistro hydro` on `Sat, 06 Sep 2014 14:34:30 -0000`
