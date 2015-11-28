@@ -1,0 +1,12 @@
+Source: ros-jade-octomap
+Section: misc
+Priority: extra
+Maintainer: Armin Hornung <hornunga@informatik.uni-freiburg.de>
+Build-Depends: debhelper (>= 9.0.0), cmake
+Homepage: http://octomap.github.io
+Standards-Version: 3.9.2
+
+Package: ros-jade-octomap
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jade-catkin
+Description: The OctoMap library implements a 3D occupancy grid mapping approach, providing data structures and mapping algorithms in C++. The map implementation is based on an octree. See http://octomap.github.io for details.
