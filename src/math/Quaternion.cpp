@@ -37,7 +37,6 @@
 
 #include <cassert>
 #include <math.h>
-#include <algorithm>
 
 
 // used from Vector: norm2, unit, *
