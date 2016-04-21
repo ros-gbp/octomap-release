@@ -1,3 +1,29 @@
+## octomap (kinetic) - 1.8.0-0
+
+The packages in the `octomap` repository were released into the `kinetic` distro by running `/usr/bin/bloom-release octomap --track kinetic --rosdistro kinetic` on `Thu, 21 Apr 2016 18:31:01 -0000`
+
+These packages were released:
+- `dynamic_edt_3d`
+- `octomap`
+- `octovis`
+
+Version of package(s) in repository `octomap`:
+
+- upstream repository: https://github.com/OctoMap/octomap.git
+- release repository: https://github.com/ros-gbp/octomap-release.git
+- rosdistro version: `1.7.2-1`
+- old version: `1.7.2-1`
+- new version: `1.8.0-0`
+
+Versions of tools used:
+
+- bloom version: `0.5.21`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.4`
+- rosdistro version: `0.4.5`
+- vcstools version: `0.1.38`
+
+
 ## octomap (kinetic) - 1.7.2-1
 
 The packages in the `octomap` repository were released into the `kinetic` distro by running `/usr/bin/bloom-release --track kinetic --rosdistro kinetic octomap` on `Tue, 29 Mar 2016 16:51:38 -0000`
