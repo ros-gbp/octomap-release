@@ -98,7 +98,7 @@ tracks:
       -i :{release_inc} --os-name debian --os-not-required
     - git-bloom-generate -y rosrpm --prefix release/:{ros_distro} :{ros_distro} -i
       :{release_inc}
-    devel_branch: devel
+    devel_branch: v1.8-fixes
     last_version: 1.8.0
     name: octomap
     patches: ' '
