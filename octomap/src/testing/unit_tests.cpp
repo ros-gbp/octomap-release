@@ -149,7 +149,6 @@ int main(int argc, char** argv) {
   // ------------------------------------------------------------
   // graph read file test
   } else if (test_name == "ReadGraph") {
-    // not really meaningful, see better test in "test_scans.cpp"
     ScanGraph graph;
     EXPECT_TRUE (graph.readBinary("test.graph"));
   // ------------------------------------------------------------

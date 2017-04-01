@@ -55,9 +55,7 @@ namespace octomap {
 
     scan->writeBinary(s);
     pose.writeBinary(s);
-
-    uint32_t uintId = static_cast<uint32_t>(id);
-    s.write((char*)&uintId, sizeof(uintId));
+    s.write((char*)&id, sizeof(id));
 
     return s;
   }
@@ -69,9 +67,7 @@ namespace octomap {
 
     this->pose.readBinary(s);
 
-    uint32_t uintId;
-    s.read((char*)&uintId, sizeof(uintId));
-    this->id = uintId;
+    s.read((char*)&this->id, sizeof(this->id));
 
     return s;
   }

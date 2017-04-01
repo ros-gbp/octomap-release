@@ -40,6 +40,7 @@
 #include <ciso646>
 
 #include <assert.h>
+#include <inttypes.h>
 
 /* Libc++ does not implement the TR1 namespace, all c++11 related functionality
  * is instead implemented in the std namespace.

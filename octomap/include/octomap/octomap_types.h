@@ -37,7 +37,6 @@
 #include <stdio.h>
 #include <vector>
 #include <list>
-#include <inttypes.h>
 
 #include <octomap/math/Vector3.h>
 #include <octomap/math/Pose6D.h>
