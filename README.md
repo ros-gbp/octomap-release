@@ -1,3 +1,29 @@
+## octomap (lunar) - 1.8.0-2
+
+The packages in the `octomap` repository were released into the `lunar` distro by running `/usr/bin/bloom-release --track lunar --ros-distro lunar octomap` on `Fri, 07 Apr 2017 17:23:58 -0000`
+
+These packages were released:
+- `dynamic_edt_3d`
+- `octomap`
+- `octovis`
+
+Version of package(s) in repository `octomap`:
+
+- upstream repository: https://github.com/OctoMap/octomap.git
+- release repository: https://github.com/ros-gbp/octomap-release.git
+- rosdistro version: `1.8.0-1`
+- old version: `1.8.0-1`
+- new version: `1.8.0-2`
+
+Versions of tools used:
+
+- bloom version: `0.5.26`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.5`
+- rosdistro version: `0.4.7`
+- vcstools version: `0.1.39`
+
+
 ## octomap (lunar) - 1.8.0-1
 
 The packages in the `octomap` repository were released into the `lunar` distro by running `/usr/bin/bloom-release --track lunar --ros-distro lunar octomap` on `Wed, 05 Apr 2017 18:07:27 -0000`
