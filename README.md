@@ -1,3 +1,27 @@
+## octomap (melodic) - 1.9.0-0
+
+The packages in the `octomap` repository were released into the `melodic` distro by running `/usr/bin/bloom-release --track melodic --ros-distro melodic octomap` on `Tue, 27 Mar 2018 17:50:20 -0000`
+
+These packages were released:
+- `dynamic_edt_3d`
+- `octomap`
+- `octovis`
+
+Version of package(s) in repository `octomap`:
+- upstream repository: https://github.com/OctoMap/octomap.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `1.9.0-0`
+
+Versions of tools used:
+- bloom version: `0.5.20`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.4`
+- rosdistro version: `0.4.4`
+- vcstools version: `0.1.38`
+
+
 ## octomap (lunar) - 1.9.0-0
 
 The packages in the `octomap` repository were released into the `lunar` distro by running `/usr/bin/bloom-release --track lunar --ros-distro lunar octomap` on `Fri, 28 Apr 2017 19:54:58 -0000`
