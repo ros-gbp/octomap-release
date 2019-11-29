@@ -1,3 +1,29 @@
+## octomap (dashing) - 1.9.2-1
+
+The packages in the `octomap` repository were released into the `dashing` distro by running `/usr/bin/bloom-release octomap -r dashing` on `Fri, 29 Nov 2019 11:14:46 -0000`
+
+These packages were released:
+- `dynamic_edt_3d`
+- `octomap`
+- `octovis`
+
+Version of package(s) in repository `octomap`:
+
+- upstream repository: https://github.com/OctoMap/octomap.git
+- release repository: https://github.com/ros-gbp/octomap-release.git
+- rosdistro version: `1.9.1-1`
+- old version: `1.9.1-1`
+- new version: `1.9.2-1`
+
+Versions of tools used:
+
+- bloom version: `0.9.0`
+- catkin_pkg version: `0.4.14`
+- rosdep version: `0.17.1`
+- rosdistro version: `0.7.5`
+- vcstools version: `0.1.42`
+
+
 ## octomap (melodic) - 1.9.2-1
 
 The packages in the `octomap` repository were released into the `melodic` distro by running `/usr/bin/bloom-release octomap -r melodic` on `Fri, 29 Nov 2019 11:11:32 -0000`
