@@ -1,0 +1,25 @@
+From 143bd36f68d83936a494fcdc7b448b8b740adf75 Mon Sep 17 00:00:00 2001
+From: Wolfgang Merkt <w.merkt@gmail.com>
+Date: Sun, 29 Mar 2020 02:06:47 +0100
+Subject: [PATCH] Add workaround for libdir
+
+---
+ CMakeLists.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 350d626..11cee72 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -55,6 +55,8 @@ LINK_DIRECTORIES(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+ 
+ # Installation
+ 
++set(CMAKE_INSTALL_LIBDIR "lib/")
++
+ set(INSTALL_TARGETS_DEFAULT_ARGS
+ 	RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+ 	LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+-- 
+2.17.1
+
