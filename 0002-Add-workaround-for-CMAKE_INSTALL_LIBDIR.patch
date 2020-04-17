@@ -1,4 +1,4 @@
-From 2eba842831544feb5ccab88e907709bd8c8e1469 Mon Sep 17 00:00:00 2001
+From 649b621e283422e4d09ce5fe505e9591414e32d9 Mon Sep 17 00:00:00 2001
 From: Wolfgang Merkt <w.merkt@gmail.com>
 Date: Fri, 17 Apr 2020 15:11:57 +0100
 Subject: [PATCH 2/2] Add workaround for CMAKE_INSTALL_LIBDIR

@@ -1,4 +1,4 @@
-From e94d78fa48d165a3155eb178cb0fd909aacbb61d Mon Sep 17 00:00:00 2001
+From 7149e09649e4b210a723989ab5c9805b9ac97dc7 Mon Sep 17 00:00:00 2001
 From: Wolfgang Merkt <w.merkt@gmail.com>
 Date: Sun, 29 Mar 2020 02:08:02 +0100
 Subject: [PATCH 1/2] Add workaround for libdir
