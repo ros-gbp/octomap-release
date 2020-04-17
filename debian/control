@@ -1,0 +1,13 @@
+Source: ros-noetic-dynamic-edt-3d
+Section: misc
+Priority: optional
+Maintainer: Christoph Sprunk <sprunkc@informatik.uni-freiburg.de>
+Build-Depends: debhelper (>= 9.0.0), cmake, ros-noetic-octomap
+Homepage: http://octomap.github.io
+Standards-Version: 3.9.2
+
+Package: ros-noetic-dynamic-edt-3d
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-noetic-octomap
+Description: The dynamicEDT3D library implements an inrementally updatable Euclidean distance transform (EDT) in 3D.
+ It comes with a wrapper to use the OctoMap 3D representation and hooks into the change detection of the OctoMap library to propagate changes to the EDT.
