@@ -1,0 +1,33 @@
+From f871440b488842d15305a766b558e9dbde1c0603 Mon Sep 17 00:00:00 2001
+From: Wolfgang Merkt <w.merkt@gmail.com>
+Date: Fri, 17 Apr 2020 15:11:23 +0100
+Subject: [PATCH 2/2] Fix work-around for libdir
+
+---
+ CMakeLists.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 11cee72..6a3827a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,6 +1,8 @@
+ CMAKE_MINIMUM_REQUIRED(VERSION 3.0.2)
+ PROJECT( octomap )
+ 
++set(CMAKE_INSTALL_LIBDIR "lib")
++
+ include(CTest)
+ include(GNUInstallDirs)
+ 
+@@ -55,7 +57,6 @@ LINK_DIRECTORIES(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+ 
+ # Installation
+ 
+-set(CMAKE_INSTALL_LIBDIR "lib/")
+ 
+ set(INSTALL_TARGETS_DEFAULT_ARGS
+ 	RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+-- 
+2.17.1
+
