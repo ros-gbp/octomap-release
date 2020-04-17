@@ -1,7 +1,7 @@
-From 5118ed749162cf3140055213be1c484dfeafc8dc Mon Sep 17 00:00:00 2001
+From e94d78fa48d165a3155eb178cb0fd909aacbb61d Mon Sep 17 00:00:00 2001
 From: Wolfgang Merkt <w.merkt@gmail.com>
 Date: Sun, 29 Mar 2020 02:08:02 +0100
-Subject: [PATCH] Add workaround for libdir
+Subject: [PATCH 1/2] Add workaround for libdir
 
 ---
  CMakeLists.txt | 2 ++
