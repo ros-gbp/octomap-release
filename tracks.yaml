@@ -224,7 +224,7 @@ tracks:
     last_version: 1.9.5
     name: octomap
     patches: ' '
-    release_inc: '2'
+    release_inc: '3'
     release_repo_url: git@github.com:ros-gbp/octomap-release.git
     release_tag: v:{version}
     ros_distro: noetic
