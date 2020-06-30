@@ -1,3 +1,29 @@
+## octomap (foxy) - 1.9.5-1
+
+The packages in the `octomap` repository were released into the `foxy` distro by running `/home/wxm/.local/bin/bloom-release octomap -r foxy` on `Tue, 30 Jun 2020 23:00:12 -0000`
+
+These packages were released:
+- `dynamic_edt_3d`
+- `octomap`
+- `octovis`
+
+Version of package(s) in repository `octomap`:
+
+- upstream repository: https://github.com/OctoMap/octomap.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `1.9.5-1`
+
+Versions of tools used:
+
+- bloom version: `0.9.7`
+- catkin_pkg version: `0.4.20`
+- rosdep version: `0.19.0`
+- rosdistro version: `0.8.2`
+- vcstools version: `0.1.42`
+
+
 ## octomap (noetic) - 1.9.5-2
 
 The packages in the `octomap` repository were released into the `noetic` distro by running `/usr/bin/bloom-release -r noetic octomap` on `Sun, 29 Mar 2020 01:20:51 -0000`
