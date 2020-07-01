@@ -1,5 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0.2)
 PROJECT( octomap )
+set(CMAKE_INSTALL_LIBDIR "lib") # workaround for GNUInstallDirs
 
 include(CTest)
 include(GNUInstallDirs)
