@@ -1,6 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0.2)
 PROJECT(dynamicEDT3D)
-set(CMAKE_INSTALL_LIBDIR "lib") # workaround for GNUInstallDirs
 
 include(CTest)
 include(GNUInstallDirs)
