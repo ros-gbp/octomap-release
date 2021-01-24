@@ -1,4 +1,4 @@
-From 66af71406bb44ff8d4fc23f97f00aab244b28e9d Mon Sep 17 00:00:00 2001
+From 4cc8f545d43da0728f2d3ef8e6205b5cc12f2211 Mon Sep 17 00:00:00 2001
 From: Wolfgang Merkt <w.merkt@gmail.com>
 Date: Fri, 17 Apr 2020 15:11:23 +0100
 Subject: [PATCH 2/2] Fix work-around for libdir
@@ -29,5 +29,5 @@ index 11cee72..6a3827a 100644
  set(INSTALL_TARGETS_DEFAULT_ARGS
  	RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
 -- 
-2.17.1
+2.25.1
 
