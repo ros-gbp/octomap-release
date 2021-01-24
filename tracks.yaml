@@ -249,11 +249,11 @@ tracks:
     - git-bloom-generate -y rosrpm --prefix release/:{ros_distro} :{ros_distro} -i
       :{release_inc} --os-name rhel
     devel_branch: devel
-    last_release: v1.9.5
-    last_version: 1.9.5
+    last_release: v1.9.6
+    last_version: 1.9.6
     name: octomap
     patches: ' '
-    release_inc: '4'
+    release_inc: '1'
     release_repo_url: git@github.com:ros-gbp/octomap-release.git
     release_tag: v:{version}
     ros_distro: noetic
