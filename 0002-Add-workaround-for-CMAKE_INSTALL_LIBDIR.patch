@@ -1,4 +1,4 @@
-From 649b621e283422e4d09ce5fe505e9591414e32d9 Mon Sep 17 00:00:00 2001
+From 24c0941e5acc4c6a619aaf6f29e66be0273222c6 Mon Sep 17 00:00:00 2001
 From: Wolfgang Merkt <w.merkt@gmail.com>
 Date: Fri, 17 Apr 2020 15:11:57 +0100
 Subject: [PATCH 2/2] Add workaround for CMAKE_INSTALL_LIBDIR
@@ -21,5 +21,5 @@ index 1ac0639..676617c 100644
  include(GNUInstallDirs)
  
 -- 
-2.17.1
+2.25.1
 
