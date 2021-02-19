@@ -1,0 +1,23 @@
+From 0042622504a3d89c055445f105bc42c691a1a590 Mon Sep 17 00:00:00 2001
+From: Wolfgang Merkt <w.merkt@gmail.com>
+Date: Fri, 19 Feb 2021 13:02:44 +0000
+Subject: [PATCH] Add LIBDIR workaround for GNUInstallDirs
+
+---
+ CMakeLists.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 10b1d6d1..669bf4cd 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,5 +1,6 @@
+ CMAKE_MINIMUM_REQUIRED(VERSION 3.0.2)
+ PROJECT(dynamicEDT3D)
++set(CMAKE_INSTALL_LIBDIR "lib") # workaround for GNUInstallDirs
+ 
+ include(CTest)
+ include(GNUInstallDirs)
+-- 
+2.25.1
+
