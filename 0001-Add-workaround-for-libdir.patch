@@ -1,4 +1,4 @@
-From fed79be593e07ec1790d56d197bb39590bcabee9 Mon Sep 17 00:00:00 2001
+From 105f81abf7491c2f49d356a68d05e3ed4e3b0181 Mon Sep 17 00:00:00 2001
 From: Wolfgang Merkt <w.merkt@gmail.com>
 Date: Sun, 29 Mar 2020 02:06:47 +0100
 Subject: [PATCH 1/2] Add workaround for libdir
@@ -8,7 +8,7 @@ Subject: [PATCH 1/2] Add workaround for libdir
  1 file changed, 2 insertions(+)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 350d626..11cee72 100644
+index e192fcb..325bd54 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -55,6 +55,8 @@ LINK_DIRECTORIES(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
