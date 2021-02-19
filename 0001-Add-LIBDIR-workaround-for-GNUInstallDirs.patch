@@ -8,7 +8,7 @@ Subject: [PATCH] Add LIBDIR workaround for GNUInstallDirs
  1 file changed, 1 insertion(+)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 10b1d6d1..669bf4cd 100644
+index 10b1d6d..669bf4c 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -1,5 +1,6 @@
