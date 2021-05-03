@@ -1,4 +1,4 @@
-From b6d422fba55435a6d25cbe6f3b036c6d84ef3251 Mon Sep 17 00:00:00 2001
+From bdbfc50c0d7ef45cd443f5befa57b23507c49de5 Mon Sep 17 00:00:00 2001
 From: Wolfgang Merkt <w.merkt@gmail.com>
 Date: Fri, 17 Apr 2020 15:11:23 +0100
 Subject: [PATCH 2/2] Fix work-around for libdir
@@ -8,7 +8,7 @@ Subject: [PATCH 2/2] Fix work-around for libdir
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 325bd54..e24675e 100644
+index 325bd540..e24675e1 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -1,6 +1,8 @@
