@@ -1,4 +1,4 @@
-From c6d4b71ac137193310a220e2c6935fb4635c2a3f Mon Sep 17 00:00:00 2001
+From 7ca3247f08fcc86e5b4ef6046b3e4fef96066ed9 Mon Sep 17 00:00:00 2001
 From: Wolfgang Merkt <w.merkt@gmail.com>
 Date: Wed, 1 Jul 2020 19:12:50 +0100
 Subject: [PATCH] Add LIBDIR workaround for GNUInstallDirs
@@ -8,7 +8,7 @@ Subject: [PATCH] Add LIBDIR workaround for GNUInstallDirs
  1 file changed, 1 insertion(+)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 350d6263..5f984578 100644
+index f091ea13..38499022 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -1,5 +1,6 @@
