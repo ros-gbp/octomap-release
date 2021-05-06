@@ -1,0 +1,23 @@
+From f60ac1ec19e2ba066e2ad288ba3d9f714f75522e Mon Sep 17 00:00:00 2001
+From: Wolfgang Merkt <w.merkt@gmail.com>
+Date: Wed, 1 Jul 2020 19:13:18 +0100
+Subject: [PATCH] Add LIBDIR workaround for GNUInstallDirs
+
+---
+ CMakeLists.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 974fbab9..b0356aae 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,5 +1,6 @@
+ CMAKE_MINIMUM_REQUIRED(VERSION 3.0.2)
+ PROJECT( octovis )
++set(CMAKE_INSTALL_LIBDIR "lib") # workaround for GNUInstallDirs
+ 
+ include(CTest)
+ include(GNUInstallDirs)
+-- 
+2.25.1
+
