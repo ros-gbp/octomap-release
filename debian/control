@@ -1,0 +1,13 @@
+Source: ros-galactic-octomap
+Section: misc
+Priority: optional
+Maintainer: Armin Hornung <armin@hornung.io>
+Build-Depends: debhelper (>= 9.0.0), cmake, ros-galactic-ros-workspace
+Homepage: http://octomap.github.io
+Standards-Version: 3.9.2
+
+Package: ros-galactic-octomap
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-galactic-ament-cmake, ros-galactic-ros-workspace
+Description: The OctoMap library implements a 3D occupancy grid mapping approach, providing data structures and mapping algorithms in C++.
+ The map implementation is based on an octree. See http://octomap.github.io for details.
