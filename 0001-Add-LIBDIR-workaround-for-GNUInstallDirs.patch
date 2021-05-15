@@ -1,4 +1,4 @@
-From 7ca3247f08fcc86e5b4ef6046b3e4fef96066ed9 Mon Sep 17 00:00:00 2001
+From 5d05c82320c05a34a3c4f75d1591f14a881a3160 Mon Sep 17 00:00:00 2001
 From: Wolfgang Merkt <w.merkt@gmail.com>
 Date: Wed, 1 Jul 2020 19:12:50 +0100
 Subject: [PATCH] Add LIBDIR workaround for GNUInstallDirs
