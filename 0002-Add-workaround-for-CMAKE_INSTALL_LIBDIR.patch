@@ -1,4 +1,4 @@
-From 3eac0170b0676802e4145bfa1a2ba44195f72744 Mon Sep 17 00:00:00 2001
+From 35716c755c20296f4f52ae86afd618ca2a4e5cb7 Mon Sep 17 00:00:00 2001
 From: Wolfgang Merkt <w.merkt@gmail.com>
 Date: Fri, 17 Apr 2020 15:11:57 +0100
 Subject: [PATCH 2/2] Add workaround for CMAKE_INSTALL_LIBDIR
@@ -8,7 +8,7 @@ Subject: [PATCH 2/2] Add workaround for CMAKE_INSTALL_LIBDIR
  1 file changed, 2 insertions(+)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 3030872e..c126f0ac 100644
+index 7c9d426b..b6204c52 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -1,6 +1,8 @@
